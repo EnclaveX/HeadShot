@@ -141,9 +141,7 @@
 						localStorage.setItem(userKey, JSON.stringify(res.data));
 						this.$router.push({ path: "/home" });
 					})
-					.catch(showError => {
-						console.log(showError)
-					});
+					.catch(showError);
 			},
 			signup() {
 				axios

@@ -28,6 +28,7 @@
 
 		<v-content>
 			<v-container class="fill-height" fluid>
+				<v-btn @click="insertCountries">InsertCountries</v-btn>
 				<v-row align="center" justify="center">
 					<v-col class="shrink">
 						<v-tooltip right>
@@ -64,6 +65,9 @@
 </template>
 
 <script>
+	import axios from "axios";
+	import { baseApiUrl, showError, userKey, baseFootballApiUrl, footballApiHeaders } from "@/global";
+
 	export default {
 		props: {
 			source: String
@@ -72,13 +76,35 @@
 			drawer: null
 		}),
 		metaInfo: {
-			title: 'HeadShot - The Betbot (Home)'
+			title: "HeadShot - The Betbot (Home)"
 		},
 		created() {
 			this.$vuetify.theme.dark = true;
 		},
-		destroyed(){
+		destroyed() {
 			this.$vuetify.theme.dark = false;
+		},
+		methods: {
+			async insertCountries() {
+				const config = {
+					method: "get",
+					url: `${baseFootballApiUrl}/countries`,
+					headers: footballApiHeaders
+				};
+
+				let contries = await axios(config)
+					.then((resp) => {
+						return resp.data.response
+					})
+					.catch(showError);
+
+				axios
+					.post(`${baseApiUrl}/countries/insertCountries`, contries)
+					.then(() => {
+						this.$toasted.global.defaultSuccess();
+					})
+					.catch(showError);
+			}
 		}
 	};
 </script>
