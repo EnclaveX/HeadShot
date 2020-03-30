@@ -12,7 +12,45 @@
 	</div>
 </template>
 
-<style lang="scss">
+<script>
+	import axios from "axios";
+	import { mapActions } from "vuex";
+	import { baseApiUrl, userKey } from "@/global";
+
+	export default {
+		name: "App",
+		methods: {
+			...mapActions("users", ["setUser"]),
+			async validateToken() {
+				this.validatingToken = true;
+
+				const json = localStorage.getItem(userKey);
+				const userData = JSON.parse(json);
+
+				this.setUser(null);
+
+				const res = await axios.post(`${baseApiUrl}/validateToken`, userData);
+
+				if (res.data) {
+					this.setUser(userData);
+				} else {
+					localStorage.removeItem(userKey);
+					if (this.$router.history.current.name !== "Login") {
+						this.$router.push({ name: "Login" });
+					}
+				}
+
+				this.validatingToken = false;
+			}
+		},
+		created() {
+			this.validateToken();
+		}
+	};
+</script>
+
+
+<style>
 	#app {
 		font-family: Roboto, Helvetica, Arial, sans-serif;
 		-webkit-font-smoothing: antialiased;
@@ -21,10 +59,6 @@
 
 	#nav {
 		padding: 30px;
-
-		a {
-			font-weight: bold;
-		}
 	}
 
 	.toasted-layout {

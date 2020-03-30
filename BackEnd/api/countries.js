@@ -1,55 +1,62 @@
 
 module.exports = app => {
-
-	findCountry = function (countryCode) {
+	getByCode = function (countryCode) {
 		return app.db('countries')
 			.where({ code: countryCode })
 			.first()
+			.then(resp => resp)
 	}
 
-	insertCountries = async (req, res) => {
+	get = async (req, res) => {
+		app.db('countries')
+			.then(countries => {
+				res.json(countries)
+			}).catch(err => {
+				res.status(500).send(err)
+			})
+	}
+
+	save = async (req, res) => {
 		const countries = req.body
+
 		let countryDB
-
+		
 		countries.forEach(async country => {
-			try {
-				if (country.code) {
-					countryDB = await findCountry(country.code)
-				} else {
-					return
-				}
+			if (!country.code){
+				country.code	= '-'
+				country.flag	= ''
+			}
 
-				let countryExists = false
+			if (country.code) {
+				countryDB = await getByCode(country.code)
+			}
 
-				if (countryDB.id) {
-					countryExists = true
+			let countryExists = false
 
-					country.id = countryDB.id
-				} else {
-					countryExists = false
-				}
+			if (!!countryDB && !!countryDB.id) {
+				countryExists = true
+				
+				country.id = countryDB.id
+			} else {
+				countryExists = false
+			}
 
-				if (countryExists) {
-					app.db('countries')
-						.update(country)
-						.where({ id: country.id })
-						.catch(err => {
-							return res.status(500).send(err)
-						})
-				} else {
-					app.db('countries')
-						.insert(country)
-						.catch(err => {
-							return res.status(500).send(err)
-						})
-				}
-			} catch (err) {
-				res.status(400).send(err)
+			if (countryExists) {
+				app.db('countries')
+					.update(country)
+					.where({ id: country.id })
+					.catch(err => {
+						return res.status(500).send(err)
+					})
+			} else {
+				app.db('countries')
+					.insert(country)
+					.catch(err => {
+						return res.status(500).send(err)
+					})
 			}
 		})
-
-		res.status(204).send()
 	}
 
-	return { insertCountries }
+	return { save, get }
 }

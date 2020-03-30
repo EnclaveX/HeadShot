@@ -3,8 +3,16 @@ module.exports = app => {
     app.post('/signin', app.api.auth.signin)
     app.post('/validateToken', app.api.auth.validateToken)
 
-    app.route('/countries/insertCountries')
-        .post(app.api.countries.insertCountries)
+    app.route('/countries')
+        .post(app.api.countries.save)
+        .get(app.api.countries.get)
+
+    app.route('/leagues')
+        .post(app.api.leagues.save)
+        .get(app.api.leagues.get)
+
+    app.route('/menus')
+        .get(app.api.menus.get)
 
     // app.route('/users/:id')
     //     .all(app.config.passport.authenticate())

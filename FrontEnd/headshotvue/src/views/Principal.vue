@@ -1,14 +1,14 @@
 <template>
 	<v-app id="inspire" class="principal">
 		<v-content class="content">
+			<div class="d-flex">
+				<v-toolbar class="app-toolbar d-flex flex-row-reverse">
+					<v-toolbar-items>
+						<v-select :items="langs" v-model="lang"></v-select>
+					</v-toolbar-items>
+				</v-toolbar>
+			</div>
 			<v-img class="d-flex background">
-				<div class="d-flex">
-					<v-toolbar class="app-toolbar d-flex flex-row-reverse">
-						<v-toolbar-items>
-							<v-select :items="langs" v-model="lang"></v-select>
-						</v-toolbar-items>
-					</v-toolbar>
-				</div>
 				<v-row :class="'painel d-flex justify-center align-content-center mb-6'" flat tile>
 					<v-form :class="'form'">
 						<div
@@ -99,7 +99,7 @@
 		name: "login",
 		components: {},
 		metaInfo: {
-			title: 'HeadShot - The Betbot'
+			title: "HeadShot - The Betbot"
 		},
 		data: function() {
 			return {
@@ -139,7 +139,7 @@
 					.then(res => {
 						this.setUser(res.data);
 						localStorage.setItem(userKey, JSON.stringify(res.data));
-						this.$router.push({ path: "/home" });
+						this.$router.push({ path: "/" });
 					})
 					.catch(showError);
 			},
@@ -160,19 +160,26 @@
 
 				this.$i18n.locale = value;
 			}
+		},
+		created(){
+			this.$i18n.locale = localStorage.getItem("HeadShotLocale");
+			this.lang = this.$i18n.locale;
 		}
 	};
 </script>
 
 <style>
-	.background {
-		background-image: url('D:/Program/HeadShot/FrontEnd/headshotvue/src/assets/background-login.png');
-		background-size: cover;
-		height: 100%;
-		z-index: 999;
+	.principal {
+		min-height: 100vh;
 	}
 
-	.layer-background {
+	.background {
+		background-image: url("D:/Program/HeadShot/FrontEnd/headshotvue/src/assets/background-login.png");
+		background-size: cover;
+		height: 100%;
+		display: flex;
+		justify-content: center;
+		align-items: center;
 		z-index: 1;
 	}
 
@@ -183,14 +190,11 @@
 		width: 500px;
 	}
 
-	.painel {
-		height: 100%;
-	}
-
 	.app-toolbar {
 		position: absolute;
 		width: 100%;
 		padding-top: 10px;
+		z-index: 2;
 	}
 </style>
 

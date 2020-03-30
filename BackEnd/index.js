@@ -1,8 +1,11 @@
 const app = require('express')()
+const bodyParser = require('body-parser');
 const consign = require('consign')
 const db = require('./config/db')
 
 app.db = db
+
+app.use(bodyParser.json({ limit: "5mb" }));
 
 consign()
     .include('./config/passport.js')
@@ -14,5 +17,5 @@ consign()
     .into(app)
 
 app.listen(3001, () => {
-    console.log('Backend executando.') 
+    console.log('Backend executando.')
 }) 

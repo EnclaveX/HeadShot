@@ -14,7 +14,7 @@ export const baseApiUrl = 'http://localhost:3001'
 export const baseFootballApiUrl = 'https://api-football-beta.p.rapidapi.com'
 export const footballApiHeaders = {
     "x-rapidapi-host": "api-football-beta.p.rapidapi.com",
-    "x-rapidapi-key": "1320ffeacfmsh4ad3a0a2b97c3c8p1ad9f1jsn75c1e160eac6"
+    "x-rapidapi-key": "638059d4e9msh2b54fe30c3fee4bp18a1c8jsne70c19a29667"
 }
 
 export function showError(e) {
