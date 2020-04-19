@@ -4,6 +4,7 @@ module.exports = app => {
         app.db('menus')
             .then(menus => {
                 app.db('menu_items')
+                    .orderBy('order', 'asc')
                     .then(menuItems => {
                         let menuIndex
 

@@ -4,14 +4,8 @@
 			<v-data-table :headers="headers" :items="data" :sort-by="headers.sortBy" class="elevation-1">
 				<template v-slot:top>
 					<v-toolbar flat>
-						<v-toolbar-title class="col-2">{{$i18n.t(`headshot.team.${title}`)}}</v-toolbar-title>
+						<v-toolbar-title class="col-2">{{$i18n.t(`headshot.teams.${title}`)}}</v-toolbar-title>
 						<v-divider class="mx-4" inset vertical></v-divider>
-						<div class="d-flex flex-row-reverse buttons-painel-datatable" style="width: 100%">
-							<v-btn
-								@click="insertTeams()"
-								class="button-datatable primary"
-							>{{$i18n.t('headshot.general.load')}}</v-btn>
-						</div>
 					</v-toolbar>
 				</template>
 				<template v-slot:item.actions="{ item }">
@@ -26,7 +20,7 @@
 			<v-dialog v-model="imageDialog" max-width="500px">
 				<v-card>
 					<div class="overline mb-4">{{this.team.name}}</div>
-					<v-img :src="this.team.flag" contain max-height="300"/>
+					<v-img :src="this.team.logo" contain max-height="300"/>
 					<v-card-actions>
 						<v-btn color="primary" text @click="imageDialog = false">{{$i18n.t('headshot.general.close')}}</v-btn>
 					</v-card-actions>
@@ -69,8 +63,6 @@
 				axios(config)
 					.then(teams => {
 						this.data = teams.data.map(item => {
-							delete item.id;
-
 							return item;
 						});
 					})
@@ -81,25 +73,14 @@
 					method: "get",
 					url: `${baseFootballApiUrl}/teams`,
 					headers: footballApiHeaders,
-					params: {league: 39, season: 2019}
+					params: { league: 39, season: 2019 }
 				};
 
 				let teams = await axios(config)
 					.then(resp => {
-						console.log(resp)
 						return resp.data.response;
 					})
 					.catch(showError);
-
-
-				// axios
-				// 	.post(`${baseApiUrl}/teams`, teams)
-				// 	.then(() => {
-				// 		this.$toasted.global.defaultSuccess();
-				// 	})
-				// 	.catch(showError);
-
-				// this.loadteams();
 			}
 		},
 		mounted() {
@@ -108,15 +89,15 @@
 		created() {
 			this.headers = [
 				{
-					text: this.$i18n.t("headshot.team.name"),
+					text: this.$i18n.t("headshot.teams.id"),
+					value: "id"
+				},
+				{
+					text: this.$i18n.t("headshot.teams.name"),
 					value: "name"
 				},
 				{
-					text: this.$i18n.t("headshot.team.code"),
-					value: "code"
-				},
-				{
-					text: this.$i18n.t("headshot.team.actions"),
+					text: this.$i18n.t("headshot.teams.actions"),
 					value: "actions",
 					sortable: false
 				}

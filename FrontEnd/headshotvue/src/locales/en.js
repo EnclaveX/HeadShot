@@ -27,7 +27,9 @@ export default {
             bettingList: "Betting List",
             analyticalReports: "Analytical Reports",
             configurations: "Configurations",
-            loadApis: "Load Api's"
+            loadApis: "Load Api's",
+            standings: "Standings",
+            anothers: "Anothers"
         },
         general: {
             successMsg: "Success",
@@ -35,7 +37,10 @@ export default {
             new: "New",
             load: "Load",
             viewImage: "View Image",
-            close: "Close"
+            viewResp: "View Resp",
+            close: "Close",
+            filters: "Filters",
+            noDataAvailable: "No Data Avalable"
         },
         user: {
             nameWasNotEntered: "The user name not entered.",
@@ -58,8 +63,46 @@ export default {
             actions: "Actions",
             country: "Country",
             type: "Type",
+            favorite: "Favorite",
             league: "League",
             leagues: "Leagues"
+        },
+        standings: {
+            leagues: "Leagues",
+            seasons: "Seasons",
+            league: "League",
+            season: "Season",
+            standings: "Standings",
+            rank: "Rank",
+            team: "Team",
+            points: "P",
+            numberGames: "G",
+            numberWins: "W",
+            numberDraws: "D",
+            numberLoses: "L",
+            lastFive: "Last Five",
+            goalsFor: "GF",
+            goalsAgainst: "GA",
+            goalsDiff: "GD",
+            actions: "Actions",
+            fixtures: "Fixtures",
+            round: "Round"
+        },
+        teams: {
+            id: "Id",
+            name: "Name",
+            actions: "Actions",
+            teams: "Teams"
+        },
+        loadApis: {
+            name: "Name",
+            actions: "Actions",
+            loadApis: "Load Api's"
+        },
+        anothers: {
+            loadFixtures: "Load Fixtures",
+            loadFixturesAntSeasons: "Load Fixtures of Ant Sesasons",
+            calculateStandings: "Calculate Standings"
         }
     }
 }

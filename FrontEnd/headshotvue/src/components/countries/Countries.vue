@@ -7,7 +7,7 @@
 						<v-toolbar-title class="col-2">{{$i18n.t(`headshot.country.${title}`)}}</v-toolbar-title>
 						<v-divider class="mx-4" inset vertical></v-divider>
 						<div class="d-flex flex-row-reverse buttons-painel-datatable" style="width: 100%">
-							<v-btn
+							<v-btn 
 								@click="insertCountries()"
 								class="button-datatable primary"
 							>{{$i18n.t('headshot.general.load')}}</v-btn>
@@ -42,7 +42,8 @@
 		baseApiUrl,
 		showError,
 		baseFootballApiUrl,
-		footballApiHeaders
+		footballApiHeaders,
+		production
 	} from "@/global";
 
 	export default {
@@ -77,28 +78,36 @@
 					.catch(showError);
 			},
 			async insertCountries() {
-				const config = {
-					method: "get",
-					url: `${baseFootballApiUrl}/countries`,
-					headers: footballApiHeaders
-				};
+				let config = {};
+
+				if (production) {
+					config = {
+						method: "get",
+						url: `${baseFootballApiUrl}/countries`,
+						headers: footballApiHeaders
+					};
+				} else {
+					config = {
+						method: "get",
+						url: `${baseApiUrl}/apiTests/countries`
+					};
+				}
 
 				let countries = await axios(config)
 					.then(resp => {
-						return resp.data.response;
+						return JSON.parse(resp.data.resp);
 					})
 					.catch(showError);
 
-				if (!!countries && countries.lenght > 0) {
-					await axios
+				if (!!countries && countries.length > 0) {
+					axios
 						.post(`${baseApiUrl}/countries`, countries)
 						.then(() => {
 							this.$toasted.global.defaultSuccess();
+							this.loadCountries();
 						})
 						.catch(showError);
 				}
-
-				this.loadCountries();
 			}
 		},
 		mounted() {

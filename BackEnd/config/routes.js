@@ -11,20 +11,35 @@ module.exports = app => {
         .post(app.api.leagues.save)
         .get(app.api.leagues.get)
 
+    app.route('/leagues/seasons')
+        .get(app.api.leagues.getWithSeasons)
+
+    app.route('/seasons')
+        .get(app.api.seasons.get)
+
+    app.route('/standings')
+        .post(app.api.standings.save)
+        .get(app.api.standings.get)
+
+    app.route('/standingsPerRound')
+        .post(app.api.standingsPerRound.save)
+        .get(app.api.standingsPerRound.get)
+
+    app.route('/fixtures')
+        .post(app.api.fixtures.save)
+        .get(app.api.fixtures.get)
+
+    app.route('/teams')
+        .post(app.api.teams.save)
+        .get(app.api.teams.get)
+
+    app.route('/apiTests/:name')
+        .get(app.api.apiTests.getByName)
+
+    app.route('/apiTests')
+        .post(app.api.apiTests.save)
+        .get(app.api.apiTests.get)
+
     app.route('/menus')
         .get(app.api.menus.get)
-
-    // app.route('/users/:id')
-    //     .all(app.config.passport.authenticate())
-    //     .put(app.api.user.save)
-    //     .get(app.api.user.getById) 
-    //     .delete(app.api.user.remove)
-    
-    // app.route('/searchUsers/:search')
-    //     .all(app.config.passport.authenticate())
-    //     .get(app.api.user.searchUser)
-
-    // app.route('/searchUsers')
-    //     .all(app.config.passport.authenticate())
-    //     .get(app.api.user.searchUser)
 }

@@ -44,7 +44,9 @@
 		},
 		methods: {
 			goUrl(menu) {
-				this.$router.push({ path: `/${menu}` });
+				if (this.$router.currentRoute.path !== `/${menu}`) {
+					this.$router.push({ path: `/${menu}` });
+				}
 			},
 			async loadMenus() {
 				const config = {

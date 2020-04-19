@@ -27,7 +27,9 @@ export default {
             bettingList: "Lista de Apostas",
             analyticalReports: "Relatórios Analíticos",
             configurations: "Configurações",
-            loadApis: "Carregar Api's"
+            loadApis: "Carregar Api's",
+            standings: "Tabelas",
+            anothers: "Outros"
         },
         general: {
             successMsg: "Operação realizada com sucesso.",
@@ -35,7 +37,10 @@ export default {
             new: "Novo",
             load: "Carregar",
             viewImage: "Ver Imagem",
-            close: "Fechar"
+            viewResp: "Ver Resposta",
+            close: "Fechar",
+            filters: "Filtros",
+            noDataAvailable: "Sem dados para serem exibidos"
         },
         user: {
             nameWasNotEntered: "O nome do usuário não foi informado.",
@@ -58,8 +63,46 @@ export default {
             actions: "Ações",
             country: "País",
             type: "Tipo",
+            favorite: "Favorito",
             league: "Liga",
             leagues: "Ligas"
+        },
+        standings: {
+            leagues: "Ligas",
+            seasons: "Temporadas",
+            league: "Liga",
+            season: "Temporada",
+            standings: "Tabela",
+            rank: "Posição",
+            team: "Time",
+            points: "P",
+            numberGames: "J",
+            numberWins: "V",
+            numberDraws: "E",
+            numberLoses: "D",
+            lastFive: "Últimos Cinco",
+            goalsFor: "GP",
+            goalsAgainst: "GC",
+            goalsDiff: "SG",
+            actions: "Ações",
+            round: "Rodada",
+            fixtures: "Jogos"
+        },
+        teams: {
+            id: "Id",
+            name: "Nome",
+            actions: "Ações",
+            teams: "Times"
+        },
+        loadApis: {
+            name: "Nome",
+            actions: "Ações",
+            loadApis: "Carregar Api's"
+        },
+        anothers: {
+            loadFixtures: "Carregar Jogos",
+            loadFixturesAntSeasons: "Carregar Jogos de Temporadas Passadas",
+            calculateStandings: "Calcular Tabelas"
         }
     }
 }

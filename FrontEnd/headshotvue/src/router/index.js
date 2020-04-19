@@ -5,6 +5,9 @@ import Principal from '../views/Principal.vue'
 import Countries from '../components/countries/Countries.vue'
 import Teams from '../components/teams/Teams.vue'
 import Leagues from '../components/leagues/Leagues.vue'
+import Standings from '../components/standings/Standings.vue'
+import LoadApis from '../components/loadApis/LoadApis.vue'
+import Anothers from '../components/anothers/Anothers.vue'
 import { userKey } from '@/global'
 
 Vue.use(VueRouter)
@@ -37,7 +40,22 @@ const router = new VueRouter({
 					path: 'leagues',
 					name: 'Leagues',
 					component: Leagues
-				}
+				},
+				{
+					path: 'standings',
+					name: 'Standings',
+					component: Standings
+				},
+				{ 
+					path: 'loadApis',
+					name: 'LoadApis',
+					component: LoadApis
+				},
+				{ 
+					path: 'anothers',
+					name: 'Anothers',
+					component: Anothers
+				} 
 			]
 		},
 		{
