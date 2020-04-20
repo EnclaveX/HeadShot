@@ -11,10 +11,9 @@ module.exports = app => {
             .where(params)
             .first()
             .then(resp => resp)
-            .catch(e => {
-                console.log(e)
-                return e  
-            })
+            .catch((err) => {
+                res.status(500).send(err)
+            });
     }
 
     get = async (req, res) => {
@@ -77,8 +76,7 @@ module.exports = app => {
         let standingPerRoundDB
 
         const insertStandingsPerRound = function (standingsPerRound) {
-            const resolveStandingsPerRound = new Promise((resolve, reject) => {
-                console.log(standingsPerRound)
+            const resolveStandingsPerRound = new Promise((resolve, reject) => { 
                 standingsPerRound.forEach(async (standingPerRound, index, standingsPerRound) => {
                     if (!!standingPerRound.rank) {
                         standingPerRoundDB = await getByRank(
@@ -145,8 +143,8 @@ module.exports = app => {
             .then(() => {
                 res.status(204).send()
             })
-            .catch(err => {
-                console.log(err)
+            .catch((err) => {
+                res.status(500).send(err)
             });
 
     }

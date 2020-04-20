@@ -509,7 +509,7 @@
 									home_goals_against: round.homeGoalsAgainst,
 									home_played: round.homePlayed,
 									home_win: round.homeWin,
-									home_draw: round.homeDraw, 
+									home_draw: round.homeDraw,
 									home_lose: round.homeLose,
 									away_goals_for: round.awayGoalsFor,
 									away_goals_against: round.awayGoalsAgainst,
@@ -524,18 +524,22 @@
 					});
 				};
 
-				let standings = await getStandingsPerRound(this.leagues);
+				let leagueStandingsPerRound = await getStandingsPerRound(this.leagues);
 
-				console.log(standings);
+				let insertStandings = []
 
-				for (let standing of standings) {
-					await axios
-						.post(`${baseApiUrl}/standingsPerRound`, standing)
-						.then(() => {
-							this.$toasted.global.defaultSuccess();
-						})
-						.catch(showError);
+				for (let standingsPerRound of leagueStandingsPerRound) {
+					for (let standingPerRound of standingsPerRound){
+						insertStandings.push(standingPerRound)
+					}
 				}
+
+				await axios
+					.post(`${baseApiUrl}/standingsPerRound`, insertStandings)
+					.then(() => {
+						this.$toasted.global.defaultSuccess();
+					})
+					.catch(showError);
 			}
 		}
 	};
