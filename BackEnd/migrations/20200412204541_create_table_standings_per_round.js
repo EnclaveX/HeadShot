@@ -3,6 +3,7 @@ exports.up = function (knex, Promise) {
     return knex.schema.createTable('standings_per_round', table => {
         table.increments('id').primary()
         table.string('round')
+        table.integer('round_number')
         table.integer('rank')
         table.integer('team_id').notNull()
         table.foreign('team_id').references('teams.id')
@@ -30,7 +31,7 @@ exports.up = function (knex, Promise) {
         table.integer('away_win')
         table.integer('away_draw')
         table.integer('away_lose')
-        table.string('form')
+        table.string('status')
     })
 };
 

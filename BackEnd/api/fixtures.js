@@ -1,5 +1,5 @@
 module.exports = app => {
-    const getById = function (fixtureId) {
+    const getById = (fixtureId) => {
         params = {
             id: fixtureId
         }
@@ -10,7 +10,7 @@ module.exports = app => {
             .then(resp => resp)
     }
 
-    get = async (req, res) => {
+    get = (req, res) => {
         let params = {}
 
         if (!!req.query.seasonId) {
@@ -26,6 +26,7 @@ module.exports = app => {
             'fixtures.venue',
             'fixtures.status',
             'fixtures.round',
+            'fixtures.round_number as roundNumber',
             'fixtures.fixture_date as fixtureDate',
             'fixtures.extratime',
             'fixtures.penalty',
@@ -42,6 +43,8 @@ module.exports = app => {
             'fixtures.away_fulltime_goals as awayFulltimeGoals',
             'fixtures.away_halftime_goals as awayHalftimeGoals',
             'fixtures.away_extratime_goals as awayExtratimeGoals',
+            'fixtures.home_team_end_status as homeTeamEndStatus',
+            'fixtures.away_team_end_status as awayTeamEndStatus',
             'fixtures.away_penalty_goals as awayPenaltyGoals') 
             .from('fixtures')
             .innerJoin('teams as teamsHome', 'fixtures.team_home_id', 'teamsHome.id')

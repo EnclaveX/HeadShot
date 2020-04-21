@@ -91,11 +91,37 @@
 				let fixturesFormated = [];
 
 				fixtures.forEach(data => {
+					let roundNumber = parseInt(
+						data.league.round
+							.substring(data.league.round.length - 3)
+							.replace("-", "")
+							.trim()
+					);
+
+					let homeTeamEndStatus, awayTeamEndStatus;
+
+					if (data.fixture.status.long === "Match Finished") {
+						if (data.score.fulltime.home > data.score.fulltime.away) {
+							homeTeamEndStatus = "W";
+							awayTeamEndStatus = "L";
+						} else if (data.score.fulltime.home < data.score.fulltime.away) {
+							homeTeamEndStatus = "L";
+							awayTeamEndStatus = "W";
+						} else {
+							homeTeamEndStatus = "D";
+							awayTeamEndStatus = "D";
+						}
+					} else {
+						homeTeamEndStatus = "P";
+						awayTeamEndStatus = "P";
+					}
+
 					fixturesFormated.push({
 						id: data.fixture.id,
 						venue: data.fixture.venue,
 						status: data.fixture.status.long,
 						round: data.league.round,
+						round_number: roundNumber,
 						fixture_date: data.fixture.timestamp,
 						extratime:
 							data.score.extratime.home === null &&
@@ -117,7 +143,9 @@
 						away_fulltime_goals: data.score.fulltime.away,
 						away_halftime_goals: data.score.halftime.away,
 						away_extratime_goals: data.score.extratime.away,
-						away_penalty_goals: data.score.penalty.away
+						away_penalty_goals: data.score.penalty.away,
+						home_team_end_status: homeTeamEndStatus,
+						away_team_end_status: awayTeamEndStatus
 					});
 				});
 
@@ -201,6 +229,7 @@
 
 								standing.teamsStandings.push({
 									round: fixture.round,
+									roundNumber: fixture.roundNumber,
 									teamId: fixture.teamHomeId,
 									teamName: fixture.teamHomeName,
 									points: fixture.homePoints,
@@ -224,12 +253,15 @@
 									awayWin: 0,
 									awayDraw: 0,
 									awayLose: 0,
+									status: fixture.status,
+									teamEndStatus: fixture.homeTeamEndStatus,
 									leagueId,
 									seasonId
 								});
 
 								standing.teamsStandings.push({
 									round: fixture.round,
+									roundNumber: fixture.roundNumber,
 									teamId: fixture.teamAwayId,
 									teamName: fixture.teamAwayName,
 									points: fixture.awayPoints,
@@ -253,12 +285,15 @@
 									awayWin: fixture.awayWin,
 									awayDraw: fixture.awayDraw,
 									awayLose: fixture.awayLose,
+									status: fixture.status,
+									teamEndStatus: fixture.awayTeamEndStatus,
 									leagueId,
 									seasonId
 								});
 							} else {
 								standing.teamsStandings.push({
 									round: fixture.round,
+									roundNumber: fixture.roundNumber,
 									teamId: fixture.teamHomeId,
 									teamName: fixture.teamHomeName,
 									points: 0,
@@ -281,12 +316,15 @@
 									awayWin: 0,
 									awayDraw: 0,
 									awayLose: 0,
+									status: fixture.status,
+									teamEndStatus: fixture.homeTeamEndStatus,
 									leagueId,
 									seasonId
 								});
 
 								standing.teamsStandings.push({
 									round: fixture.round,
+									roundNumber: fixture.roundNumber,
 									teamId: fixture.teamAwayId,
 									teamName: fixture.teamAwayName,
 									points: 0,
@@ -309,6 +347,8 @@
 									awayWin: 0,
 									awayDraw: 0,
 									awayLose: 0,
+									status: fixture.status,
+									teamEndStatus: fixture.awayTeamEndStatus,
 									leagueId,
 									seasonId
 								});
@@ -376,6 +416,7 @@
 
 								let newRoundStanding = {
 									round: roundStanding.round,
+									roundNumber: roundStanding.roundNumber,
 									teamId: roundStanding.teamId,
 									teamName: roundStanding.teamName,
 									points: roundStanding.points + previousTeamRound.points,
@@ -408,6 +449,8 @@
 									awayWin: roundStanding.awayWin + previousTeamRound.awayWin,
 									awayDraw: roundStanding.awayDraw + previousTeamRound.awayLose,
 									awayLose: roundStanding.awayLose + previousTeamRound.awayLose,
+									teamEndStatus: roundStanding.teamEndStatus,
+									status: roundStanding.status,
 									leagueId: roundStanding.leagueId,
 									seasonId: roundStanding.seasonId
 								};
@@ -493,6 +536,7 @@
 							return standings.map(round => {
 								return {
 									round: round.round,
+									round_number: round.roundNumber,
 									rank: round.rank,
 									team_id: round.teamId,
 									league_id: round.leagueId,
@@ -517,7 +561,8 @@
 									away_win: round.awayWin,
 									away_draw: round.awayDraw,
 									away_lose: round.awayLose,
-									form: "XXXXX"
+									team_end_status: round.teamEndStatus,
+									status: round.status
 								};
 							});
 						});
@@ -526,11 +571,13 @@
 
 				let leagueStandingsPerRound = await getStandingsPerRound(this.leagues);
 
-				let insertStandings = []
+				let insertStandings = [];
 
 				for (let standingsPerRound of leagueStandingsPerRound) {
-					for (let standingPerRound of standingsPerRound){
-						insertStandings.push(standingPerRound)
+					for (let standingPerRound of standingsPerRound) {
+						for (let standing of standingPerRound) {
+							insertStandings.push(standing);
+						}
 					}
 				}
 

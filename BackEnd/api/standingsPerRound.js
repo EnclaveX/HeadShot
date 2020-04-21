@@ -7,7 +7,7 @@ module.exports = app => {
             round: round
         }
 
-        return app.db('standings')
+        return app.db('standings_per_round')
             .where(params)
             .first()
             .then(resp => resp)
@@ -58,6 +58,7 @@ module.exports = app => {
             'standings_per_round.away_win as awayWin',
             'standings_per_round.away_draw as awayDraw',
             'standings_per_round.away_lose as awayLose',
+            'standings_per_round.round',
             'standings_per_round.form as lastFive')
             .from('standings_per_round')
             .innerJoin('teams', 'standings_per_round.team_id', 'teams.id')

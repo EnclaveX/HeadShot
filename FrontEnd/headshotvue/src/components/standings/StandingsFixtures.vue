@@ -100,8 +100,6 @@
 					}
 				});
 
-				console.log(!!lastFinishedRound);
-
 				if (lastFinishedRound === null || lastFinishedRound === "") {
 					lastFinishedRound = this.fixtures[1];
 				}
