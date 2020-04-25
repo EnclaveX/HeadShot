@@ -16,6 +16,25 @@ module.exports = app => {
             });
     }
 
+    getLastStandingPerRound = (req, res) => {
+        let params = {}
+
+        params.season_id = req.query.seasonId
+        params.league_id = req.query.leagueId
+
+        app.db('standings_per_round')
+            .max('standings_per_round.round_number as roundNumber')
+            .where(params)
+            .andWhere(function () {
+                this.where('status', '=', 'Match Finished')
+            })
+            .then(maxRoundNumber => {
+                res.json(maxRoundNumber)
+            }).catch(err => {
+                res.status(500).send(err)
+            })
+    }
+
     get = async (req, res) => {
         let params = {}
 
@@ -30,6 +49,17 @@ module.exports = app => {
         if (!!req.query.round) {
             params.round = req.query.round
         }
+
+        if (!!req.query.roundNumber) {
+            params.round_number = req.query.roundNumber
+        }
+
+        let formSelect = app.db.raw("(select right(string_agg(spr.team_end_status, '' order by spr.round_number asc), 5) " +
+            "from standings_per_round as spr " +
+            "where spr.league_id = standings_per_round.league_id and " +
+            "spr.season_id = standings_per_round.season_id and " +
+            "spr.team_id = standings_per_round.team_id and " +
+            "spr.round_number <= standings_per_round.round_number) ")
 
         app.db.select('standings_per_round.rank',
             'standings_per_round.team_id as teamId',
@@ -59,7 +89,7 @@ module.exports = app => {
             'standings_per_round.away_draw as awayDraw',
             'standings_per_round.away_lose as awayLose',
             'standings_per_round.round',
-            'standings_per_round.form as lastFive')
+            { lastFive: formSelect })
             .from('standings_per_round')
             .innerJoin('teams', 'standings_per_round.team_id', 'teams.id')
             .where(params)
@@ -67,6 +97,7 @@ module.exports = app => {
             .then(standingsPerRound => {
                 res.json(standingsPerRound)
             }).catch(err => {
+                console.log(err)
                 res.status(500).send(err)
             })
     }
@@ -77,13 +108,13 @@ module.exports = app => {
         let standingPerRoundDB
 
         const insertStandingsPerRound = function (standingsPerRound) {
-            const resolveStandingsPerRound = new Promise((resolve, reject) => { 
+            const resolveStandingsPerRound = new Promise((resolve, reject) => {
                 standingsPerRound.forEach(async (standingPerRound, index, standingsPerRound) => {
                     if (!!standingPerRound.rank) {
                         standingPerRoundDB = await getByRank(
                             standingPerRound.rank,
                             standingPerRound.league_id,
-                            standingPerRound.season_id, 
+                            standingPerRound.season_id,
                             standingPerRound.round
                         ).catch(e => {
                             throw e
@@ -150,5 +181,5 @@ module.exports = app => {
 
     }
 
-    return { save, get }
+    return { save, get, getLastStandingPerRound }
 }

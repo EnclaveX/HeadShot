@@ -67,8 +67,11 @@
 			}
 		},
 		watch: {
-			season: function(newSeason){
-				this.loadStandings()
+			season: function(newSeason) {
+				this.loadStandings();
+			},
+			league: function(newLeague) {
+				this.standings = []
 			}
 		},
 		methods: {
@@ -77,9 +80,9 @@
 					return;
 				}
 
-				const config = {
+				let config = {
 					method: "get",
-					url: `${baseApiUrl}/standings`,
+					url: `${baseApiUrl}/lastStandingPerRound`,
 					params: {
 						leagueId: this.league,
 						seasonId: this.season
@@ -87,8 +90,23 @@
 				};
 
 				axios(config)
-					.then(standings => {
-						this.standings = standings.data.map(item => {
+					.then(item => {
+						const roundNumber = item.data[0].roundNumber;
+
+						let config = {
+							method: "get",
+							url: `${baseApiUrl}/standingsPerRound`,
+							params: {
+								leagueId: this.league,
+								seasonId: this.season,
+								roundNumber
+							}
+						};
+
+						return axios(config);
+					})
+					.then(standingsPerRound => {
+						this.standings = standingsPerRound.data.map(item => {
 							return item;
 						});
 					})
@@ -148,11 +166,6 @@
 					text: this.$i18n.t("headshot.standings.lastFive"),
 					value: "lastFive",
 					width: "130px",
-					sortable: false
-				},
-				{
-					text: this.$i18n.t("headshot.standings.actions"),
-					value: "actions",
 					sortable: false
 				}
 			];

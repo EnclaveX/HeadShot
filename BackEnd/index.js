@@ -1,4 +1,5 @@
 const app = require('express')()
+const compression = require('compression')
 const bodyParser = require('body-parser');
 const consign = require('consign')
 const db = require('./config/db')
@@ -6,6 +7,7 @@ const db = require('./config/db')
 app.db = db
 
 app.use(bodyParser.json({ limit: "5mb" }));
+app.use(compression());
 
 consign()
     .include('./config/passport.js')

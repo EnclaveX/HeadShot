@@ -4,10 +4,6 @@
 			<v-row>
 				<v-col cols="12">
 					<FilterStandings/>
-					<v-btn
-						@click="insertStandingsAndFixtures()"
-						class="button-filter primary"
-					>{{$i18n.t('headshot.general.load')}}</v-btn>
 				</v-col>
 			</v-row>
 			<v-row>
@@ -55,9 +51,6 @@
 			}
 		},
 		methods: {
-			async calculateStandings(fixtures){
-				
-			},
 			async insertStandingsAndFixtures() {
 				if (!this.league && !this.season) {
 					return;

@@ -10,6 +10,7 @@
 						md="4"
 						@change="selectRound"
 						v-model="round"
+						:no-data-text="$i18n.t(`headshot.general.noDataAvailable`)"
 						:items="rounds"
 						:label="$i18n.t(`headshot.standings.round`)"
 					></v-select>
@@ -69,6 +70,12 @@
 				await this.filterFixturesByRound(this.round);
 
 				this.$forceUpdate();
+			},
+			league: function(newLeague) {
+				this.fixtures = [];
+				this.rounds = [];
+				this.roundFixtures = [];
+				this.round = "";
 			}
 		},
 		methods: {

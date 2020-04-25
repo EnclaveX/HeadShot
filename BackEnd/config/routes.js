@@ -25,6 +25,9 @@ module.exports = app => {
         .post(app.api.standingsPerRound.save)
         .get(app.api.standingsPerRound.get)
 
+    app.route('/lastStandingPerRound')
+        .get(app.api.standingsPerRound.getLastStandingPerRound)
+
     app.route('/fixtures')
         .post(app.api.fixtures.save)
         .get(app.api.fixtures.get)
