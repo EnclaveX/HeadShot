@@ -78,16 +78,14 @@
 					.catch(showError);
 			},
 			async insertCountries() {
-				let config = {};
-
 				if (production) {
-					config = {
+					let config = {
 						method: "get",
 						url: `${baseFootballApiUrl}/countries`,
 						headers: footballApiHeaders
 					};
 				} else {
-					config = {
+					let config = {
 						method: "get",
 						url: `${baseApiUrl}/apiTests/countries`
 					};
@@ -137,13 +135,5 @@
 	.button-datatable {
 		padding: 10px;
 		margin: 5px;
-	}
-
-	.buttons-painel-datatable {
-		color: black;
-	}
-
-	.v-application--wrap {
-		min-height: 0;
 	}
 </style>

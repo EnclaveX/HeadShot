@@ -56,6 +56,7 @@ module.exports = app => {
 
     save = async (req, res) => {
         const leagues = req.body
+
         let leagueDB
 
         const insertLeagues = function (leagues) {
@@ -67,14 +68,12 @@ module.exports = app => {
 
                     let leagueExists = false
 
+                    league.logo = league.logo || ''
+
                     if (!!leagueDB && leagueDB.id) {
                         leagueExists = true
                     } else {
                         leagueExists = false
-                    }
-
-                    if (league.logo === null) {
-                        league.logo = ''
                     }
 
                     if (!!league.seasons && league.seasons.length > 0) {
@@ -121,7 +120,7 @@ module.exports = app => {
             return resolveLeagues
         }
 
-        const promiseReturn = await insertLeagues(leagues)
+        await insertLeagues(leagues)
             .then(leagues => {
                 return Promise.all(leagues).then(league => {
                     return league;
@@ -143,17 +142,9 @@ module.exports = app => {
                         seasonDB = await getSeasonByYearLeague(season.year, season.leagueId)
                     }
 
-                    let seasonExists = false
-
                     if (!!seasonDB && !!seasonDB.id) {
-                        seasonExists = true
-
                         season.id = seasonDB.id
-                    } else {
-                        seasonExists = false
-                    }
 
-                    if (seasonExists) {
                         app.db('seasons')
                             .update(season)
                             .where({ id: season.id })
@@ -179,9 +170,13 @@ module.exports = app => {
 
         const promiseReturn = await insertSeasons(seasons)
             .then(seasons => {
-                return Promise.all(seasons).then(season => {
-                    return season;
-                });
+                return Promise.all(seasons)
+                    .then(season => {
+                        return season;
+                    });
+            })
+            .catch(err => {
+                return err
             });
 
         return promiseReturn

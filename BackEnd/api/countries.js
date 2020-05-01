@@ -25,7 +25,6 @@ module.exports = app => {
 					res.status(500).send(err)
 				})
 		}
-
 	}
 
 	save = async (req, res) => {
@@ -36,29 +35,16 @@ module.exports = app => {
 		const insertCountries = function (countries) {
 			const resolveCountries = new Promise((resolve, reject) => {
 				countries.forEach(async (country, index, countries) => {
-					if (!country.code) {
-						country.code = 'NN'
-					}
-
-					if (!country.flag) {
-						country.flag = ''
-					}
+					country.code = country.code || 'NN'
+					country.flag = country.flag || ''
 
 					if (country.name) {
 						countryDB = await getByName(country.name)
 					}
 
-					let countryExists = false
-
 					if (!!countryDB && !!countryDB.id) {
-						countryExists = true
-
 						country.id = countryDB.id
-					} else {
-						countryExists = false
-					}
 
-					if (countryExists) {
 						app.db('countries')
 							.update(country)
 							.where({ id: country.id })
@@ -82,7 +68,7 @@ module.exports = app => {
 			return resolveCountries
 		}
 
-		const promiseReturn = await insertCountries(countries)
+		await insertCountries(countries)
 			.then(countries => {
 				return Promise.all(countries).then(country => {
 					return country;

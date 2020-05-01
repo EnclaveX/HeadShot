@@ -1,6 +1,6 @@
 module.exports = app => {
     const getByRank = function (standingRank, leagueId, seasonId) {
-        params = {
+        let params = {
             rank: standingRank,
             league_id: leagueId,
             season_id: seasonId
@@ -73,15 +73,7 @@ module.exports = app => {
                         standingDB = await getByRank(standing.rank, standing.league_id, standing.season_id)
                     }
 
-                    let standingExists = false
-
                     if (!!standingDB && standingDB.rank) {
-                        standingExists = true
-                    } else {
-                        standingExists = false
-                    }
-
-                    if (standingExists) {
                         const rank = standing.rank
                         const leagueId = standing.league_id
                         const seasonId = standing.season_id

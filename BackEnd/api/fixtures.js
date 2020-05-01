@@ -45,7 +45,7 @@ module.exports = app => {
             'fixtures.away_extratime_goals as awayExtratimeGoals',
             'fixtures.home_team_end_status as homeTeamEndStatus',
             'fixtures.away_team_end_status as awayTeamEndStatus',
-            'fixtures.away_penalty_goals as awayPenaltyGoals') 
+            'fixtures.away_penalty_goals as awayPenaltyGoals')
             .from('fixtures')
             .innerJoin('teams as teamsHome', 'fixtures.team_home_id', 'teamsHome.id')
             .innerJoin('teams as teamsAway', 'fixtures.team_away_id', 'teamsAway.id')
@@ -65,20 +65,12 @@ module.exports = app => {
 
         const insertFixtures = function (fixtures) {
             const resolveFixtures = new Promise((resolve, reject) => {
-                fixtures.forEach(async (fixture, index, fixtures) => { 
+                fixtures.forEach(async (fixture, index, fixtures) => {
                     if (!!fixture.id) {
                         fixtureDB = await getById(fixture.id)
                     }
 
-                    let fixtureExists = false
-
                     if (!!fixtureDB && fixtureDB.id) {
-                        fixtureExists = true
-                    } else {
-                        fixtureExists = false
-                    }
-
-                    if (fixtureExists) {
                         const id = fixture.id
 
                         delete fixture.id
@@ -89,8 +81,8 @@ module.exports = app => {
                             .catch(err => {
                                 reject(err)
                             })
-                        } else {
-                            app.db('fixtures')
+                    } else {
+                        app.db('fixtures')
                             .insert(fixture)
                             .catch(err => {
                                 reject(err)
@@ -106,7 +98,7 @@ module.exports = app => {
             return resolveFixtures
         }
 
-        const promiseReturn = await insertFixtures(fixtures)
+        await insertFixtures(fixtures)
             .then(fixtures => {
                 return Promise.all(fixtures).then(fixture => {
                     return fixture;

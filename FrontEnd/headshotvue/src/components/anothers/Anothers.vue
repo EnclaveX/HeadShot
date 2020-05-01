@@ -45,9 +45,7 @@
 					}
 				};
 
-				if (current) {
-					config.params.current = true;
-				}
+				if (current) config.params.current = true;
 
 				await axios(config)
 					.then(leagues => {
@@ -84,19 +82,21 @@
 					})
 					.catch(showError);
 
-				if (!fixtures) {
-					return;
-				}
+				if (!fixtures) return;
 
 				let fixturesFormated = [];
 
-				fixtures.forEach(data => {
-					let roundNumber = parseInt(
-						data.league.round
-							.substring(data.league.round.length - 3)
+				const getRoundNumber = round => {
+					return parseInt(
+						round
+							.substring(round.length - 3)
 							.replace("-", "")
 							.trim()
 					);
+				};
+
+				fixtures.forEach(data => {
+					const roundNumber = getRoundNumber(data.league.round);
 
 					let homeTeamEndStatus, awayTeamEndStatus;
 
@@ -193,8 +193,52 @@
 				await axios(config)
 					.then(fixtures => {
 						this.leagues = fixtures.data.map(async fixture => {
-							//Ver de trazer a vitória e derrota direto do banco de dados //refatorar
-							//Tratar penaltis e tempo extra
+							function TeamStandings(
+								round,
+								roundNumber,
+								teamId,
+								teamName,
+								status,
+								teamEndStatus,
+								leagueId,
+								seasonId,
+								typeTeam,
+								points = 0,
+								goalsFor = 0,
+								goalsAgainst = 0,
+								goalsDiff = 0,
+								played = 0,
+								win = 0,
+								draw = 0,
+								lose = 0
+							) {
+								this.round = round;
+								this.roundNumber = roundNumber;
+								this.teamId = teamId;
+								this.teamName = teamName;
+								this.points = points;
+								this.status = status;
+								this.teamEndStatus = teamEndStatus;
+								this.leagueId = leagueId;
+								this.seasonId = seasonId;
+								this.goalsDiff = goalsFor - goalsAgainst;
+
+								this[`${typeTeam}GoalsFor`] = goalsFor;
+								this[`${typeTeam}GoalsAgainst`] = goalsAgainst;
+								this[`${typeTeam}Played`] = played;
+								this[`${typeTeam}Win`] = win;
+								this[`${typeTeam}Draw`] = draw;
+								this[`${typeTeam}Lose`] = lose;
+
+								typeTeam = typeTeam === "home" ? "away" : "home";
+
+								this[`${typeTeam}GoalsFor`] = 0;
+								this[`${typeTeam}GoalsAgainst`] = 0;
+								this[`${typeTeam}Played`] = 0;
+								this[`${typeTeam}Win`] = 0;
+								this[`${typeTeam}Draw`] = 0;
+								this[`${typeTeam}Lose`] = 0;
+							}
 
 							fixture.homeWin = 0;
 							fixture.homeDraw = 0;
@@ -227,131 +271,77 @@
 									fixture.homePoints = 1;
 								}
 
-								standing.teamsStandings.push({
-									round: fixture.round,
-									roundNumber: fixture.roundNumber,
-									teamId: fixture.teamHomeId,
-									teamName: fixture.teamHomeName,
-									points: fixture.homePoints,
-									goalsFor: fixture.homeFulltimeGoals,
-									goalsAgainst: fixture.awayFulltimeGoals,
-									goalsDiff:
+								standing.teamsStandings.push(
+									new TeamStandings(
+										fixture.round,
+										fixture.roundNumber,
+										fixture.teamHomeId,
+										fixture.teamHomeName,
+										fixture.status,
+										fixture.homeTeamEndStatus,
+										leagueId,
+										seasonId,
+										"home",
+										fixture.homePoints,
+										fixture.homeFulltimeGoals,
+										fixture.awayFulltimeGoals,
 										fixture.homeFulltimeGoals - fixture.awayFulltimeGoals,
-									played: 1,
-									win: fixture.homeWin,
-									draw: fixture.homeDraw,
-									lose: fixture.homeLose,
-									homeGoalsFor: fixture.homeFulltimeGoals,
-									homeGoalsAgainst: fixture.awayFulltimeGoals,
-									homePlayed: 1,
-									homeWin: fixture.homeWin,
-									homeDraw: fixture.homeDraw,
-									homeLose: fixture.homeLose,
-									awayGoalsFor: 0,
-									awayGoalsAgainst: 0,
-									awayPlayed: 0,
-									awayWin: 0,
-									awayDraw: 0,
-									awayLose: 0,
-									status: fixture.status,
-									teamEndStatus: fixture.homeTeamEndStatus,
-									leagueId,
-									seasonId
-								});
+										1,
+										fixture.homeWin,
+										fixture.homeDraw,
+										fixture.homeLose
+									)
+								);
 
-								standing.teamsStandings.push({
-									round: fixture.round,
-									roundNumber: fixture.roundNumber,
-									teamId: fixture.teamAwayId,
-									teamName: fixture.teamAwayName,
-									points: fixture.awayPoints,
-									goalsFor: fixture.awayFulltimeGoals,
-									goalsAgainst: fixture.homeFulltimeGoals,
-									goalsDiff:
+								standing.teamsStandings.push(
+									new TeamStandings(
+										fixture.round,
+										fixture.roundNumber,
+										fixture.teamAwayId,
+										fixture.teamAwayName,
+										fixture.status,
+										fixture.awayTeamEndStatus,
+										leagueId,
+										seasonId,
+										"away",
+										fixture.awayPoints,
+										fixture.awayFulltimeGoals,
+										fixture.homeFulltimeGoals,
 										fixture.awayFulltimeGoals - fixture.homeFulltimeGoals,
-									played: 1,
-									win: fixture.awayWin,
-									draw: fixture.awayDraw,
-									lose: fixture.awayLose,
-									homeGoalsFor: 0,
-									homeGoalsAgainst: 0,
-									homePlayed: 0,
-									homeWin: 0,
-									homeDraw: 0,
-									homeLose: 0,
-									awayGoalsFor: fixture.awayFulltimeGoals,
-									awayGoalsAgainst: fixture.homeFulltimeGoals,
-									awayPlayed: 1,
-									awayWin: fixture.awayWin,
-									awayDraw: fixture.awayDraw,
-									awayLose: fixture.awayLose,
-									status: fixture.status,
-									teamEndStatus: fixture.awayTeamEndStatus,
-									leagueId,
-									seasonId
-								});
+										1,
+										fixture.awayWin,
+										fixture.awayDraw,
+										fixture.awayLose
+									)
+								);
 							} else {
-								standing.teamsStandings.push({
-									round: fixture.round,
-									roundNumber: fixture.roundNumber,
-									teamId: fixture.teamHomeId,
-									teamName: fixture.teamHomeName,
-									points: 0,
-									goalsFor: 0,
-									goalsAgainst: 0,
-									goalsDiff: 0,
-									played: 0,
-									win: 0,
-									draw: 0,
-									lose: 0,
-									homeGoalsFor: 0,
-									homeGoalsAgainst: 0,
-									homePlayed: 0,
-									homeWin: 0,
-									homeDraw: 0,
-									homeLose: 0,
-									awayGoalsFor: 0,
-									awayGoalsAgainst: 0,
-									awayPlayed: 0,
-									awayWin: 0,
-									awayDraw: 0,
-									awayLose: 0,
-									status: fixture.status,
-									teamEndStatus: fixture.homeTeamEndStatus,
-									leagueId,
-									seasonId
-								});
+								standing.teamsStandings.push(
+									new TeamStandings(
+										fixture.round,
+										fixture.roundNumber,
+										fixture.teamHomeId,
+										fixture.teamHomeName,
+										fixture.status,
+										fixture.homeTeamEndStatus,
+										leagueId,
+										seasonId,
+										"home"
+									)
+								);
 
-								standing.teamsStandings.push({
-									round: fixture.round,
-									roundNumber: fixture.roundNumber,
-									teamId: fixture.teamAwayId,
-									teamName: fixture.teamAwayName,
-									points: 0,
-									goalsFor: 0,
-									goalsAgainst: 0,
-									goalsDiff: 0,
-									played: 0,
-									win: 0,
-									draw: 0,
-									lose: 0,
-									homeGoalsFor: 0,
-									homeGoalsAgainst: 0,
-									homePlayed: 0,
-									homeWin: 0,
-									homeDraw: 0,
-									homeLose: 0,
-									awayGoalsFor: 0,
-									awayGoalsAgainst: 0,
-									awayPlayed: 0,
-									awayWin: 0,
-									awayDraw: 0,
-									awayLose: 0,
-									status: fixture.status,
-									teamEndStatus: fixture.awayTeamEndStatus,
-									leagueId,
-									seasonId
-								});
+								standing.teamsStandings.push(
+									new TeamStandings(
+										fixture.round,
+										fixture.roundNumber,
+										fixture.teamAwayId,
+										fixture.teamAwayName,
+										fixture.status,
+										fixture.awayTeamEndStatus,
+										leagueId,
+										seasonId,
+										"away"
+									)
+								);
 							}
 						});
 					})
@@ -385,6 +375,10 @@
 
 						await round.standings.forEach(
 							async (roundStanding, roundStandingindex, roundStandings) => {
+								if (roundStanding.roundNumber == 14 && roundStanding.teamId === 492){
+									console.log('parar o debug aqui')
+								}
+
 								let previousTeamRound = previousRound.standings.find(e => {
 									return e.teamId === roundStanding.teamId;
 								});
@@ -420,15 +414,6 @@
 									teamId: roundStanding.teamId,
 									teamName: roundStanding.teamName,
 									points: roundStanding.points + previousTeamRound.points,
-									goalsFor: roundStanding.goalsFor + previousTeamRound.goalsFor,
-									goalsAgainst:
-										roundStanding.goalsAgainst + previousTeamRound.goalsAgainst,
-									goalsDiff:
-										roundStanding.goalsDiff + previousTeamRound.goalsDiff,
-									played: roundStanding.played + previousTeamRound.played,
-									win: roundStanding.win + previousTeamRound.win,
-									draw: roundStanding.draw + previousTeamRound.draw,
-									lose: roundStanding.lose + previousTeamRound.lose,
 									homeGoalsFor:
 										roundStanding.homeGoalsFor + previousTeamRound.homeGoalsFor,
 									homeGoalsAgainst:
@@ -455,7 +440,7 @@
 									seasonId: roundStanding.seasonId
 								};
 
-								roundStandings[roundStandingindex] = newRoundStanding;
+								round.standings[roundStandingindex] = newRoundStanding;
 							}
 						);
 					} else {
@@ -471,20 +456,25 @@
 			},
 			calculateRankings(round) {
 				function compareValues(key, order = "asc") {
-					return function innerSort(a, b) {
-						if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
+					return function innerSort(paramA, paramB) {
+						if (!paramA.hasOwnProperty(key) || !paramB.hasOwnProperty(key)) {
 							return 0;
 						}
 
-						const varA =
-							typeof a[key] === "string" ? a[key].toUpperCase() : a[key];
-						const varB =
-							typeof b[key] === "string" ? b[key].toUpperCase() : b[key];
+						const valueA =
+							typeof paramA[key] === "string"
+								? paramA[key].toUpperCase()
+								: paramA[key];
+						const valueB =
+							typeof paramB[key] === "string"
+								? paramB[key].toUpperCase()
+								: paramB[key];
 
 						let comparison = 0;
-						if (varA > varB) {
+
+						if (valueA > valueB) {
 							comparison = 1;
-						} else if (varA < varB) {
+						} else if (valueA < valueB) {
 							comparison = -1;
 						}
 						return order === "desc" ? comparison * -1 : comparison;
@@ -542,13 +532,13 @@
 									league_id: round.leagueId,
 									season_id: round.seasonId,
 									points: round.points,
-									goals_for: round.goalsFor,
-									goals_against: round.goalsAgainst,
+									goals_for: round.homeGoalsFor + round.awayGoalsFor,
+									goals_against: round.homeGoalsAgainst + round.awayGoalsAgainst,
 									goals_diff: round.goalsDiff,
-									played: round.played,
-									win: round.win,
-									draw: round.draw,
-									lose: round.lose,
+									played: round.homePlayed || round.awayPlayed,
+									win: round.homeWin || round.awayWin,
+									draw: round.homeDraw || round.awayDraw,
+									lose: round.homeLose || round.awayLose,
 									home_goals_for: round.homeGoalsFor,
 									home_goals_against: round.homeGoalsAgainst,
 									home_played: round.homePlayed,

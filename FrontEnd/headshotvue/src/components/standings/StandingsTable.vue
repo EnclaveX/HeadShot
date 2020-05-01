@@ -1,5 +1,10 @@
 <template>
 	<v-app id="inspire" class="standings-table">
+		<v-dialog
+			v-model="dialogMoreStatistics"
+			width="1000">
+			<TeamsStatistics/>
+		</v-dialog>
 		<v-card>
 			<v-row>
 				<v-card-title class="ml-4">{{$i18n.t(`headshot.standings.standings`)}}</v-card-title>
@@ -11,6 +16,9 @@
 				:headers="headers"
 				:items="standings"
 				:sort-by="headers.sortBy"
+				item-key="rank"
+				:single-expand="false"
+				show-expand
 				class="elevation-1"
 				:items-per-page="30"
 				:calculate-widths="true"
@@ -32,6 +40,25 @@
 						<span>{{'Vai mostrar o jogo em questão'}}</span>
 					</v-tooltip>
 				</template>
+				<template v-slot:expanded-item="{ headers, item }">
+					<td :colspan="headers.length">
+						<v-row>
+							<v-col cols="2" class="mt-1">
+								<img :src="item.teamLogo" class="team-logo-medium">
+							</v-col>
+							<v-col cols="6" class="mt-2 team-name-medium">{{item.teamName}}</v-col>
+							<v-col cols="4" class="mt-3">
+								<v-btn class="grey darken-3" @click="showMoreStatistics(item)">{{$i18n.t(`headshot.standings.moreStatistics`)}}</v-btn>
+							</v-col>
+						</v-row>
+						<StandingsRankRiseChart
+							:key="item.teamId"
+							:teamId="item.teamId"
+							:seasonId="item.seasonId"
+							:leagueId="item.leagueId"
+						/>
+					</td>
+				</template>
 			</v-data-table>
 		</v-card>
 	</v-app>
@@ -39,6 +66,9 @@
 
 <script>
 	import axios from "axios";
+	import StandingsRankRiseChart from "./StandingsRankRiseChart.vue";
+	import TeamsStatistics from "../teams/TeamStatistics.vue";
+
 	import {
 		baseApiUrl,
 		showError,
@@ -51,8 +81,14 @@
 		data: function() {
 			return {
 				headers: [],
-				standings: []
+				standings: [],
+				expanded: [],
+				dialogMoreStatistics: false
 			};
+		},
+		components: {
+			StandingsRankRiseChart,
+			TeamsStatistics
 		},
 		computed: {
 			league: {
@@ -71,10 +107,13 @@
 				this.loadStandings();
 			},
 			league: function(newLeague) {
-				this.standings = []
+				this.standings = [];
 			}
 		},
 		methods: {
+			async showMoreStatistics(team){
+				this.dialogMoreStatistics = true
+			},
 			async loadStandings() {
 				if (this.league === null || this.season === null) {
 					return;
@@ -167,6 +206,11 @@
 					value: "lastFive",
 					width: "130px",
 					sortable: false
+				},
+				,
+				{
+					text: "",
+					value: "data-table-expand"
 				}
 			];
 		},
@@ -191,18 +235,27 @@
 	}
 
 	.lastfiveW {
-		background-color: green;
+		background-color: #008000;
 	}
 
 	.lastfiveD {
-		background-color: orange;
+		background-color: #ffa500;
 	}
 
 	.lastfiveL {
-		background-color: red;
+		background-color: #ff0000;
 	}
 
 	.button-datatable {
 		align-self: center;
+	}
+
+	.team-logo-medium {
+		width: 50px;
+	}
+
+	.team-name-medium {
+		font-size: 1.8rem;
+		text-align: left;
 	}
 </style>

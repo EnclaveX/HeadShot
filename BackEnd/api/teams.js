@@ -22,6 +22,7 @@ module.exports = app => {
 
     save = async (req, res) => {
         const teams = req.body
+
         let teamDB
 
         const insertTeams = function (teams) {
@@ -31,15 +32,7 @@ module.exports = app => {
                         teamDB = await getById(team.id)
                     }
 
-                    let teamExists = false
-
                     if (!!teamDB && teamDB.id) {
-                        teamExists = true
-                    } else {
-                        teamExists = false
-                    }
-
-                    if (teamExists) {
                         app.db('teams')
                             .update(team)
                             .where({ id: team.id })
@@ -63,7 +56,7 @@ module.exports = app => {
             return resolveTeams
         }
 
-        const promiseReturn = await insertTeams(teams)
+        await insertTeams(teams)
             .then(teams => {
                 return Promise.all(teams).then(team => {
                     return team;
@@ -71,6 +64,9 @@ module.exports = app => {
             })
             .then(() => {
                 res.status(204).send()
+            })
+            .catch(err => {
+                res.status(500).send(err)
             });
 
     }

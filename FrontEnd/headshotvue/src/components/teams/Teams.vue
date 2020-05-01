@@ -115,8 +115,4 @@
 	.buttons-painel-datatable {
 		color: black;
 	}
-
-	.v-application--wrap {
-		min-height: 0;
-	}
 </style>

@@ -8,9 +8,13 @@
 			href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css"
 			rel="stylesheet"
 		>
+
 		<router-view/>
 	</div>
 </template>
+
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue-apexcharts"></script>
 
 <script>
 	import axios from "axios";
@@ -35,6 +39,7 @@
 					this.setUser(userData);
 				} else {
 					localStorage.removeItem(userKey);
+
 					if (this.$router.history.current.name !== "Login") {
 						this.$router.push({ name: "Login" });
 					}
@@ -55,10 +60,6 @@
 		font-family: Roboto, Helvetica, Arial, sans-serif;
 		-webkit-font-smoothing: antialiased;
 		text-align: center;
-	}
-
-	#nav {
-		padding: 30px;
 	}
 
 	.toasted-layout {

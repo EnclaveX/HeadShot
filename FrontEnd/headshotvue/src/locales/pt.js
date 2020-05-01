@@ -86,7 +86,8 @@ export default {
             goalsDiff: "SG",
             actions: "Ações",
             round: "Rodada",
-            fixtures: "Jogos"
+            fixtures: "Jogos",
+            moreStatistics: "Mais Estatísticas"
         },
         teams: {
             id: "Id",

@@ -9,7 +9,7 @@
 			<v-col md="2">
 				<v-toolbar-title>HeadShot</v-toolbar-title>
 			</v-col>
-			<v-col md="3" offset-md="7">
+			<v-col md="2" offset-md="7">
 				<v-select class="pa-2" :items="langs" v-model="lang"/>
 			</v-col>
 		</v-app-bar>

@@ -6,14 +6,13 @@
 			<router-view/>
 		</v-content>
 
-		<v-footer app>
-			<span>&copy; 2019</span>
-		</v-footer>
+		<Footer/>
 	</v-app>
 </template>
 
 <script>
 	import Header from "../template/Header";
+	import Footer from "../template/Footer";
 	import axios from "axios";
 
 	export default {
@@ -21,10 +20,11 @@
 			source: String
 		},
 		components: {
-			Header
+			Header,
+			Footer
 		},
 		metaInfo: {
-			title: "HeadShot - The Betbot (Home)"
+			title: "HeadShot - The Betbot"
 		},
 		created() {
 			this.$vuetify.theme.dark = true;

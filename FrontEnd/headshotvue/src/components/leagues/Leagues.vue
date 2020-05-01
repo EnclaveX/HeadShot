@@ -7,7 +7,7 @@
 						<v-toolbar-title class="col-2">{{$i18n.t(`headshot.league.${title}`)}}</v-toolbar-title>
 						<v-divider class="mx-4" inset vertical></v-divider>
 						<div class="d-flex flex-row-reverse buttons-painel-datatable" style="width: 100%">
-							<v-btn 
+							<v-btn
 								@click="insertLeagues()"
 								class="button-datatable primary"
 							>{{$i18n.t('headshot.general.load')}}</v-btn>
@@ -67,11 +67,7 @@
 		},
 		methods: {
 			async favoriteLeague(league) {
-				if (league.favorite === 1) {
-					league.favorite = 0;
-				} else {
-					league.favorite = 1;
-				}
+				league.favorite = league.favorite === 1 ? 0 : 1;
 
 				const leagueMaped = { ...league };
 
@@ -102,16 +98,12 @@
 					})
 					.catch(showError);
 			},
-			async mapLeagues(leagues) {
+			async leaguesReturnFit(leagues) {
 				let mapedLeagues = [];
 
 				const resolveLeagues = new Promise((resolve, reject) => {
 					mapedLeagues = leagues.map(async league => {
-						const params = {
-							countryName: league.country.name
-						};
-
-						let seasons = await league.seasons.map((season) => {
+						let seasons = await league.seasons.map(season => {
 							return {
 								year: season.year,
 								start: season.start,
@@ -120,15 +112,24 @@
 								league_id: league.league.id,
 								fixture_events: season.coverage.fixtures.events ? 1 : 0,
 								fixture_lineups: season.coverage.fixtures.lineups ? 1 : 0,
-								fixture_statistics: season.coverage.fixtures.statistics_fixtures ? 1 : 0,
-								fixture_statistics_players: season.coverage.fixtures.statistics_players ? 1 : 0,
+								fixture_statistics: season.coverage.fixtures.statistics_fixtures
+									? 1
+									: 0,
+								fixture_statistics_players: season.coverage.fixtures
+									.statistics_players
+									? 1
+									: 0,
 								standings: season.coverage.standings ? 1 : 0,
 								players: season.coverage.players ? 1 : 0,
 								top_scorers: season.coverage.top_scorers ? 1 : 0,
 								predictions: season.coverage.predictions ? 1 : 0,
-								odds: season.coverage.odds ? 1 : 0								
-							}
-						})
+								odds: season.coverage.odds ? 1 : 0
+							};
+						});
+
+						const params = {
+							countryName: league.country.name
+						};
 
 						var country = {};
 
@@ -185,14 +186,13 @@
 					};
 				}
 
-				
 				let leagues = await axios(config)
 					.then(resp => {
 						return JSON.parse(resp.data.resp);
 					})
 					.catch(showError);
 
-				const leaguesMaped = await this.mapLeagues(leagues).then(leagues => {
+				const leaguesMaped = await this.leaguesReturnFit(leagues).then(leagues => {
 					return Promise.all(leagues).then(league => {
 						return league;
 					});

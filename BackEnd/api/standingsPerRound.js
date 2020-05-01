@@ -54,6 +54,14 @@ module.exports = app => {
             params.round_number = req.query.roundNumber
         }
 
+        if (!!req.query.teamId) {
+            params.team_id = req.query.teamId
+        }
+
+        if (!!req.query.status) {
+            params.status = req.query.status
+        }
+
         let formSelect = app.db.raw("(select right(string_agg(spr.team_end_status, '' order by spr.round_number asc), 5) " +
             "from standings_per_round as spr " +
             "where spr.league_id = standings_per_round.league_id and " +
@@ -68,6 +76,7 @@ module.exports = app => {
             'standings_per_round.league_id as leagueId',
             'standings_per_round.season_id as seasonId',
             'standings_per_round.round',
+            'standings_per_round.round_number as roundNumber',
             'standings_per_round.points',
             'standings_per_round.goals_for as goalsFor',
             'standings_per_round.goals_against as goalsAgainst',
@@ -88,16 +97,16 @@ module.exports = app => {
             'standings_per_round.away_win as awayWin',
             'standings_per_round.away_draw as awayDraw',
             'standings_per_round.away_lose as awayLose',
-            'standings_per_round.round',
+            'standings_per_round.team_end_status as teamEndStatus',
             { lastFive: formSelect })
             .from('standings_per_round')
             .innerJoin('teams', 'standings_per_round.team_id', 'teams.id')
             .where(params)
-            .orderBy('standings_per_round.rank', 'asc')
+            .orderByRaw('standings_per_round.round_number asc, standings_per_round.rank asc')
             .then(standingsPerRound => {
                 res.json(standingsPerRound)
             }).catch(err => {
-                console.log(err)
+                console.error(err)
                 res.status(500).send(err)
             })
     }
@@ -121,15 +130,7 @@ module.exports = app => {
                         })
                     }
 
-                    let standingPerRoundExists = false
-
                     if (!!standingPerRoundDB && standingPerRoundDB.rank) {
-                        standingPerRoundExists = true
-                    } else {
-                        standingPerRoundExists = false
-                    }
-
-                    if (standingPerRoundExists) {
                         const rank = standingPerRound.rank
                         const leagueId = standingPerRound.league_id
                         const seasonId = standingPerRound.season_id
