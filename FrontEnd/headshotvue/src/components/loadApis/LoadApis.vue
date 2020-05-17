@@ -85,7 +85,7 @@
 			async loadApis(item) {
 				const config = {
 					method: "get",
-					url: `${baseFootballApiUrl}/${item.name}`,
+					url: `${baseFootballApiUrl}/${item.url || item.name}`,
 					headers: footballApiHeaders,
 					params: item.params
 				};
@@ -136,6 +136,13 @@
 					params: {
 						league: "39",
 						season: "2019"
+					}
+				},
+				{
+					name: "fixturesStatistics",
+					url: "fixtures/statistics",
+					params: {
+						fixture: 157165
 					}
 				}
 			];

@@ -36,6 +36,9 @@ module.exports = app => {
         .post(app.api.teams.save)
         .get(app.api.teams.get)
 
+    app.route('/teamsStatistics')
+        .get(app.api.teamsStatistics.get)
+
     app.route('/apiTests/:name')
         .get(app.api.apiTests.getByName)
 

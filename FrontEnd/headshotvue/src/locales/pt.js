@@ -87,13 +87,55 @@ export default {
             actions: "Ações",
             round: "Rodada",
             fixtures: "Jogos",
-            moreStatistics: "Mais Estatísticas"
+            moreStatistics: "Mais Estatísticas",
+            details: "Detalhes"
         },
         teams: {
             id: "Id",
             name: "Nome",
             actions: "Ações",
             teams: "Times"
+        },
+        teamStatistics: {
+            mainStatisticsGeneralAverage: "Estatísticas Principais",
+            playedGames: "Jogos Realizados",
+            wins: "Vitórias",
+            loses: "Derrotas",
+            draws: "Empates",
+            goalsStatisticsGeneralAverage: "Estatísticas de Gols (Média por Jogo)",
+            goalsFor: "Gols Marcados",
+            goalsAgainst: "Gols Sofridos",
+            cleanSheets: "Defesa Limpa",
+            attackStatisticsGeneralAverage: "Estatísticas de Ataque (Média por Jogo)",
+            shotsOnGoal: "Chutes ao Gol",
+            shotsOffGoal: "Chutes para Fora",
+            shots: "Chutes",
+            blockedShots: "Chutes Bloqueados",
+            insideBoxShots: "Chutes de Dentro da Área",
+            outsideBoxShots: "Chutes de Fora da Área",
+            corners: "Escanteios",
+            disciplineStatisticsGeneralAverage: "Estatísticas Disciplinares (Média por Jogo)",
+            fouls: "Faltas",
+            offsides: "Impedimentos",
+            yellowCards: "Cartões Amarelo",
+            redCards: "Cartões Vermelho",
+            defenseStatisticsGeneralAverage: "Estatísticas Defensivas (Média por Jogo)",
+            goalkeeperDefenses: "Defesas do Goleiro",
+            teamRoleStatisticsGeneralAverage: "Estatísticas de Trabalho em Equipe (Média por Jogo)",
+            ballPossession: "Posse de Bola",
+            totalPasses: "Total de Passes",
+            accuratePasses: "Assertividade de Passes (%)",
+            standingsRankPerRoundChart: "Gráfico de Posição por Rodada",
+            homeResults: "Resultados como Mandante",
+            awayResults: "Resultados como Visitante",
+            results: "Resultados em Geral",
+            resultsStatistics: "Estatísticas de Resultados",
+            awayGoals: "Gols como Visitante",
+            goals: "Gols em Geral",
+            homeGoals: "Gols como Mandante",
+            goalsFor: "Gols a Favor",
+            goalsAgainst: "Gols do Adversário",
+            goalsStatistics: "Estatísticas de Gols"
         },
         loadApis: {
             name: "Nome",
@@ -103,7 +145,11 @@ export default {
         anothers: {
             loadFixtures: "Carregar Jogos",
             loadFixturesAntSeasons: "Carregar Jogos de Temporadas Passadas",
-            calculateStandings: "Calcular Tabelas"
+            calculateStandings: "Calcular Tabelas",
+            loadFixtureStatistics: "Carregar Estatísticas dos Jogos"
+        },
+        fixtureDetails: {
+            venue: "Estádio"
         }
     }
 }

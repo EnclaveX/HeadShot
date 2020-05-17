@@ -14,6 +14,10 @@
 					class="primary anothers-buttons"
 					@click="calculateStandings(true)"
 				>{{$i18n.t('headshot.anothers.calculateStandings')}}</v-btn>
+				<v-btn
+					class="primary anothers-buttons"
+					@click="loadFixtureStatistics()"
+				>{{$i18n.t('headshot.anothers.loadFixtureStatistics')}}</v-btn>
 			</v-row>
 		</v-app>
 	</div>
@@ -36,6 +40,187 @@
 			};
 		},
 		methods: {
+			async loadFixtureStatistics() {
+				let config;
+
+				if (production) {
+					config = {
+						method: "get",
+						url: `${baseApiUrl}/fixtures`,
+						params: {
+							loadedStatistics: "N",
+							status: "Match Finished",
+							limit: 100
+						}
+					};
+				} else {
+					config = {
+						method: "get",
+						url: `${baseApiUrl}/fixtures`,
+						params: {
+							loadedStatistics: "N",
+							status: "Match Finished",
+							id: 157165
+						}
+					};
+				}
+
+				let fixtures = await axios(config)
+					.then(resp => {
+						return resp.data;
+					})
+					.catch(showError);
+
+				fixtures.forEach(async fixture => {
+					if (production) {
+						config = {
+							method: "get",
+							url: `${baseFootballApiUrl}/fixtures/statistics`,
+							headers: footballApiHeaders,
+							params: {
+								fixture: fixture.id
+							}
+						};
+					} else {
+						config = {
+							method: "get",
+							url: `${baseApiUrl}/apiTests/fixturesStatistics`
+						};
+					}
+
+					let statistic = await axios(config)
+						.then(resp => {
+							if (production) {
+								return resp.data.response;
+							} else {
+								return JSON.parse(resp.data.resp);
+							}
+						})
+						.catch(showError => {
+							return showError;
+						});
+
+					let statisticsInsert = [];
+
+					let statisticInsertProperties = {
+						id: fixture.id,
+						venue: fixture.venue,
+						status: fixture.status,
+						round: fixture.round,
+						fixture_date: fixture.fixture_date,
+						extratime: fixture.extratime,
+						penalty: fixture.penalty,
+						league_id: fixture.league_id,
+						season_id: fixture.season_id,
+						team_home_id: fixture.team_home_id,
+						home_fulltime_goals: fixture.home_fulltime_goals,
+						home_halftime_goals: fixture.home_halftime_goals,
+						home_extratime_goals: fixture.home_extratime_goals,
+						home_penalty_goals: fixture.home_penalty_goals,
+						team_away_id: fixture.team_away_id,
+						away_fulltime_goals: fixture.away_fulltime_goals,
+						away_halftime_goals: fixture.away_halftime_goals,
+						away_extratime_goals: fixture.away_extratime_goals,
+						away_penalty_goals: fixture.away_penalty_goals,
+						round_number: fixture.round_number,
+						home_team_end_status: fixture.home_team_end_status,
+						away_team_end_status: fixture.away_team_end_status,
+						loaded_statistics: "Y"
+					};
+
+					statistic.forEach((fixtureSides, index) => {
+						fixtureSides.statistics.forEach(statistic => {
+							let side = "";
+
+							if (index === 0) {
+								side = "home";
+							} else {
+								side = "away";
+							}
+
+							if (statistic.type === "Shots on Goal") {
+								statisticInsertProperties[`${side}_shots_on_goal`] =
+									statistic.value || 0;
+							}
+
+							if (statistic.type === "Shots off Goal") {
+								statisticInsertProperties[`${side}_shots_off_goal`] =
+									statistic.value || 0;
+							}
+
+							if (statistic.type === "Total Shots") {
+								statisticInsertProperties[`${side}_total_shots`] =
+									statistic.value || 0;
+							}
+
+							if (statistic.type === "Blocked Shots") {
+								statisticInsertProperties[`${side}_blocked_shots`] =
+									statistic.value || 0;
+							}
+
+							if (statistic.type === "Shots insidebox") {
+								statisticInsertProperties[`${side}_insidebox_shots`] =
+									statistic.value || 0;
+							}
+
+							if (statistic.type === "Shots outsidebox") {
+								statisticInsertProperties[`${side}_outsidebox_shots`] =
+									statistic.value || 0;
+							}
+
+							if (statistic.type === "Corner Kicks") {
+								statisticInsertProperties[`${side}_corners`] =
+									statistic.value || 0;
+							}
+
+							if (statistic.type === "Offsides") {
+								statisticInsertProperties[`${side}_offsides`] =
+									statistic.value || 0;
+							}
+
+							if (statistic.type === "Fouls") {
+								statisticInsertProperties[`${side}_fouls`] = statistic.value || 0;
+							}
+
+							if (statistic.type === "Ball Possession") {
+								statisticInsertProperties[`${side}_ball_possession`] =
+									statistic.value || "0%";
+							}
+
+							if (statistic.type === "Yellow Cards") {
+								statisticInsertProperties[`${side}_yellow_cards`] =
+									statistic.value || 0;
+							}
+
+							if (statistic.type === "Red Cards") {
+								statisticInsertProperties[`${side}_red_cards`] =
+									statistic.value || 0;
+							}
+
+							if (statistic.type === "Goalkeeper Saves") {
+								statisticInsertProperties[`${side}_goalkeeper_save`] =
+									statistic.value || 0;
+							}
+
+							if (statistic.type === "Total passes") {
+								statisticInsertProperties[`${side}_total_passes`] =
+									statistic.value || 0;
+							}
+
+							if (statistic.type === "Passes accurate") {
+								statisticInsertProperties[`${side}_passes_accurate`] =
+									statistic.value || 0;
+							}
+						});
+					});
+
+					await axios
+						.post(`${baseApiUrl}/fixtures`, [statisticInsertProperties]) 
+						.catch(showError => {
+							console.log(showError)
+						});
+				});
+			},
 			async loadLeaguesAndSeasons(current, loadFixtures) {
 				const config = {
 					method: "get",
@@ -375,8 +560,11 @@
 
 						await round.standings.forEach(
 							async (roundStanding, roundStandingindex, roundStandings) => {
-								if (roundStanding.roundNumber == 14 && roundStanding.teamId === 492){
-									console.log('parar o debug aqui')
+								if (
+									roundStanding.roundNumber == 14 &&
+									roundStanding.teamId === 492
+								) {
+									console.log("parar o debug aqui");
 								}
 
 								let previousTeamRound = previousRound.standings.find(e => {

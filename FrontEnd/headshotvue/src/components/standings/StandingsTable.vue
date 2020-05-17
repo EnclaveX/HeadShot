@@ -1,10 +1,19 @@
 <template>
 	<v-app id="inspire" class="standings-table">
-		<v-dialog
-			v-model="dialogMoreStatistics"
-			width="1000">
-			<TeamsStatistics/>
-		</v-dialog>
+		<div v-if="dialogMoreStatistics">
+			<v-dialog scrollable max-width="1000px" v-model="dialogMoreStatistics">
+				<v-card style="padding-top:20px;">
+					<v-card-text style="height: 600px;">
+						<TeamsStatistics
+							:key="statistics.teamId"
+							:teamId="statistics.teamId"
+							:seasonId="statistics.seasonId"
+							:leagueId="statistics.leagueId"
+						/>
+					</v-card-text>
+				</v-card>
+			</v-dialog>
+		</div>
 		<v-card>
 			<v-row>
 				<v-card-title class="ml-4">{{$i18n.t(`headshot.standings.standings`)}}</v-card-title>
@@ -48,7 +57,10 @@
 							</v-col>
 							<v-col cols="6" class="mt-2 team-name-medium">{{item.teamName}}</v-col>
 							<v-col cols="4" class="mt-3">
-								<v-btn class="grey darken-3" @click="showMoreStatistics(item)">{{$i18n.t(`headshot.standings.moreStatistics`)}}</v-btn>
+								<v-btn
+									class="grey darken-3"
+									@click="showMoreStatistics(item)"
+								>{{$i18n.t(`headshot.standings.moreStatistics`)}}</v-btn>
 							</v-col>
 						</v-row>
 						<StandingsRankRiseChart
@@ -83,7 +95,8 @@
 				headers: [],
 				standings: [],
 				expanded: [],
-				dialogMoreStatistics: false
+				dialogMoreStatistics: false,
+				statistics: {}
 			};
 		},
 		components: {
@@ -111,8 +124,11 @@
 			}
 		},
 		methods: {
-			async showMoreStatistics(team){
-				this.dialogMoreStatistics = true
+			async showMoreStatistics(team) {
+				this.statistics.teamId = team.teamId;
+				this.statistics.seasonId = team.seasonId;
+				this.statistics.leagueId = team.leagueId;
+				this.dialogMoreStatistics = true;
 			},
 			async loadStandings() {
 				if (this.league === null || this.season === null) {
@@ -178,7 +194,7 @@
 					sortable: false
 				},
 				{
-					text: this.$i18n.t("headshot.standings.numberLoses"),
+					text: this.$i18n.t("headshot.standings.numberWins"),
 					value: "win",
 					width: "10px",
 					sortable: false
@@ -257,5 +273,9 @@
 	.team-name-medium {
 		font-size: 1.8rem;
 		text-align: left;
+	}
+
+	.v-dialog {
+		margin: 0px;
 	}
 </style>
