@@ -149,7 +149,22 @@ export default {
             loadFixtureStatistics: "Carregar Estatísticas dos Jogos"
         },
         fixtureDetails: {
-            venue: "Estádio"
+            venue: "Estádio",
+            ballPossession: "Posse de Bola",
+            shots: "Chutes",
+            shotsOnGoal: "Chutes ao Gol",
+            shotsOffGoal: "Chutes para Fora",
+            blockedShots: "Chutes Bloqueados",
+            insideboxShots: "Chutes de Dentro da Área",
+            outsideboxShots: "Chutes de Fora da Área",
+            corners: "Escanteios",
+            goalkeeperSaves: "Defesas do Goleiro",
+            yellowCards: "Cartões Amarelos",
+            redCards: "Cartões Vermelhos",
+            offsides: "Impedimentos",
+            fouls: "Faltas",
+            totalPasses: "Total de Passes",
+            passesAccurate: "Passes Certos"
         }
     }
 }
