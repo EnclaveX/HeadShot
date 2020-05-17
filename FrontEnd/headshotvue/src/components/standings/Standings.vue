@@ -56,10 +56,10 @@
 					return;
 				}
 
-				let config = {};
+				let configGetStandings = {};
 
 				if (production) {
-					config = {
+					configGetStandings = {
 						method: "get",
 						url: `${baseFootballApiUrl}/standings`,
 						headers: footballApiHeaders,
@@ -69,30 +69,30 @@
 						}
 					};
 				} else {
-					config = {
+					configGetStandings = {
 						method: "get",
 						url: `${baseApiUrl}/apiTests/standings`
 					};
 				}
 
-				let standings = await axios(config)
-					.then(resp => {
-						return JSON.parse(resp.data.resp);
+				let standings = await axios(configGetStandings)
+					.then(standings => {
+						return JSON.parse(standings.data.resp);
 					})
 					.catch(showError);
 
 				const league = standings[0].league;
 				const seasonYear = standings[0].league.season;
 
-				let params = {
+				let paramsGetSeasons = {
 					year: seasonYear,
 					leagueId: league.id
 				};
 
 				let season = await axios
-					.get(`${baseApiUrl}/seasons`, { params })
-					.then(resp => {
-						return resp.data;
+					.get(`${baseApiUrl}/seasons`, { paramsGetSeasons })
+					.then(seasons => {
+						return seasons.data;
 					})
 					.catch(showError);
 
@@ -168,8 +168,10 @@
 					};
 				});
 
+				let configGetFixtures = {}
+
 				if (production) {
-					config = {
+					configGetFixtures = {
 						method: "get",
 						url: `${baseFootballApiUrl}/fixtures`,
 						headers: footballApiHeaders,
@@ -179,15 +181,15 @@
 						}
 					};
 				} else {
-					config = {
+					configGetFixtures = {
 						method: "get",
 						url: `${baseApiUrl}/apiTests/fixtures`
 					};
 				}
 
-				let fixtures = await axios(config)
-					.then(resp => {
-						return JSON.parse(resp.data.resp);
+				let fixtures = await axios(configGetFixtures)
+					.then(fixtures => {
+						return JSON.parse(fixtures.data.resp);
 					})
 					.catch(showError);
 

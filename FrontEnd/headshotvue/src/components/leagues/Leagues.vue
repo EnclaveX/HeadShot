@@ -1,7 +1,7 @@
 <template>
 	<div id="app">
 		<v-app id="inspire">
-			<v-data-table :headers="headers" :items="data" :sort-by="headers.sortBy" class="elevation-1">
+			<v-data-table :headers="headers" :items="leagues" :sort-by="headers.sortBy" class="elevation-1">
 				<template v-slot:top>
 					<v-toolbar flat>
 						<v-toolbar-title class="col-2">{{$i18n.t(`headshot.league.${title}`)}}</v-toolbar-title>
@@ -59,7 +59,7 @@
 		data: function() {
 			return {
 				headers: [],
-				data: [],
+				leagues: [],
 				imageDialog: false,
 				title: "leagues",
 				league: {}
@@ -85,14 +85,14 @@
 				this.imageDialog = true;
 			},
 			async loadLeagues() {
-				const config = {
+				const configGetLeagues = {
 					method: "get",
 					url: `${baseApiUrl}/leagues`
 				};
 
-				axios(config)
+				axios(configGetLeagues)
 					.then(leagues => {
-						this.data = leagues.data.map(item => {
+						this.leagues = leagues.data.map(item => {
 							return item;
 						});
 					})
@@ -127,26 +127,26 @@
 							};
 						});
 
-						const params = {
+						const paramsGetCountries = {
 							countryName: league.country.name
 						};
 
 						var country = {};
 
 						await axios
-							.get(`${baseApiUrl}/countries`, { params })
-							.then(resp => {
-								country = resp.data[0];
+							.get(`${baseApiUrl}/countries`, { paramsGetCountries })
+							.then(countries => {
+								country = countries.data[0];
 							})
 							.catch(showError);
 
 						if (country === undefined) {
-							params.countryName = "World";
+							paramsGetCountries.countryName = "World";
 
 							await axios
-								.get(`${baseApiUrl}/countries`, { params })
-								.then(resp => {
-									country = resp.data[0];
+								.get(`${baseApiUrl}/countries`, { paramsGetCountries })
+								.then(countries => {
+									country = countries.data[0];
 								})
 								.catch(showError);
 						}
@@ -171,24 +171,24 @@
 				return resolveLeagues;
 			},
 			async insertLeagues() {
-				let config = {};
+				let configGetLeagues = {};
 
 				if (production) {
-					config = {
+					configGetLeagues = {
 						method: "get",
 						url: `${baseFootballApiUrl}/leagues`,
 						headers: footballApiHeaders
 					};
 				} else {
-					config = {
+					configGetLeagues = {
 						method: "get",
 						url: `${baseApiUrl}/apiTests/leagues`
 					};
 				}
 
-				let leagues = await axios(config)
-					.then(resp => {
-						return JSON.parse(resp.data.resp);
+				let leagues = await axios(configGetLeagues)
+					.then(leagues => {
+						return JSON.parse(leagues.data.resp);
 					})
 					.catch(showError);
 

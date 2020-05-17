@@ -62,12 +62,12 @@
 				this.imageDialog = true;
 			},
 			async loadCountries() {
-				const config = {
+				const configGetCountries = {
 					method: "get",
 					url: `${baseApiUrl}/countries`
 				};
 
-				axios(config)
+				axios(configGetCountries)
 					.then(countries => {
 						this.data = countries.data.map(item => {
 							delete item.id;
@@ -79,21 +79,21 @@
 			},
 			async insertCountries() {
 				if (production) {
-					let config = {
+					let configGetCountriesFootballApi = {
 						method: "get",
 						url: `${baseFootballApiUrl}/countries`,
 						headers: footballApiHeaders
 					};
 				} else {
-					let config = {
+					let configGetCountriesFootballApi = {
 						method: "get",
 						url: `${baseApiUrl}/apiTests/countries`
 					};
 				}
 
-				let countries = await axios(config)
-					.then(resp => {
-						return JSON.parse(resp.data.resp);
+				let countries = await axios(configGetCountriesFootballApi)
+					.then(countries => {
+						return JSON.parse(countries.data.resp);
 					})
 					.catch(showError);
 

@@ -183,8 +183,8 @@
 					} else {
 						penalty = false;
 						extratime = false;
-						homeResult = "peding";
-						awayResult = "peding";
+						homeResult = "pending";
+						awayResult = "pending";
 					}
 				}
 
@@ -200,7 +200,7 @@
 					return;
 				}
 
-				const config = {
+				const configGetFixtures = {
 					method: "get",
 					url: `${baseApiUrl}/fixtures`,
 					params: {
@@ -209,7 +209,7 @@
 					}
 				};
 
-				await axios(config)
+				await axios(configGetFixtures)
 					.then(fixtures => {
 						this.fixtures = fixtures.data.map(item => {
 							if (item.teamAwayName.length > 19) {
@@ -224,7 +224,7 @@
 						});
 					})
 					.catch(showError);
-
+					
 				this.fixtures = this.fixtures.map(fixture => {
 					let result = this.getResult(fixture);
 

@@ -222,7 +222,7 @@
 				});
 			},
 			async loadLeaguesAndSeasons(current, loadFixtures) {
-				const config = {
+				const configGetSeasons = {
 					method: "get",
 					url: `${baseApiUrl}/leagues/seasons`,
 					params: {
@@ -232,7 +232,7 @@
 
 				if (current) config.params.current = true;
 
-				await axios(config)
+				await axios(configGetSeasons)
 					.then(leagues => {
 						this.leagues = leagues.data.map(item => {
 							return item;
@@ -251,7 +251,7 @@
 				}
 			},
 			async loadFixtures(leagueId, seasonId, seasonYear) {
-				const config = {
+				const configGetFixtures = {
 					method: "get",
 					url: `${baseFootballApiUrl}/fixtures`,
 					headers: footballApiHeaders,
@@ -261,9 +261,9 @@
 					}
 				};
 
-				const fixtures = await axios(config)
-					.then(resp => {
-						return resp.data.response;
+				const fixtures = await axios(configGetFixtures)
+					.then(fixtures => {
+						return fixtures.data.response;
 					})
 					.catch(showError);
 
@@ -280,16 +280,16 @@
 					);
 				};
 
-				fixtures.forEach(data => {
-					const roundNumber = getRoundNumber(data.league.round);
+				fixtures.forEach(fixture => {
+					const roundNumber = getRoundNumber(fixture.league.round);
 
 					let homeTeamEndStatus, awayTeamEndStatus;
 
-					if (data.fixture.status.long === "Match Finished") {
-						if (data.score.fulltime.home > data.score.fulltime.away) {
+					if (fixture.fixture.status.long === "Match Finished") {
+						if (fixture.score.fulltime.home > fixture.score.fulltime.away) {
 							homeTeamEndStatus = "W";
 							awayTeamEndStatus = "L";
-						} else if (data.score.fulltime.home < data.score.fulltime.away) {
+						} else if (fixture.score.fulltime.home < fixture.score.fulltime.away) {
 							homeTeamEndStatus = "L";
 							awayTeamEndStatus = "W";
 						} else {
@@ -431,7 +431,6 @@
 							fixture.awayWin = 0;
 							fixture.awayDraw = 0;
 							fixture.awayLose = 0;
-
 							fixture.homePoints = 0;
 							fixture.awayPoints = 0;
 
@@ -560,15 +559,8 @@
 
 						await round.standings.forEach(
 							async (roundStanding, roundStandingindex, roundStandings) => {
-								if (
-									roundStanding.roundNumber == 14 &&
-									roundStanding.teamId === 492
-								) {
-									console.log("parar o debug aqui");
-								}
-
-								let previousTeamRound = previousRound.standings.find(e => {
-									return e.teamId === roundStanding.teamId;
+								let previousTeamRound = previousRound.standings.find(actualRound => {
+									return actualRound.teamId === roundStanding.teamId;
 								});
 
 								if (previousTeamRound === undefined) {
@@ -670,7 +662,7 @@
 				}
 
 				round.standings
-					.sort(compareValues("teamName", "desc"))
+					.sort(compareValues("teamName", "asc"))
 					.sort(compareValues("goalsFor", "desc"))
 					.sort(compareValues("win", "desc"))
 					.sort(compareValues("goalsDiff", "desc"))

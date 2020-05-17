@@ -1,7 +1,7 @@
 <template>
 	<div id="app">
 		<v-app id="inspire">
-			<v-data-table :headers="headers" :items="data" :sort-by="headers.sortBy" class="elevation-1">
+			<v-data-table :headers="headers" :items="apitests" :sort-by="headers.sortBy" class="elevation-1">
 				<template v-slot:top>
 					<v-toolbar flat>
 						<v-toolbar-title class="col-2">{{$i18n.t(`headshot.loadApis.${title}`)}}</v-toolbar-title>
@@ -58,7 +58,7 @@
 	export default {
 		data() {
 			return {
-				data: [],
+				apitests: [],
 				headers: [],
 				title: "loadApis",
 				apiTest: {},
@@ -69,34 +69,34 @@
 			async viewResp(item) {
 				this.apiTest = item;
 
-				const config = {
+				const configGetApiTest = {
 					method: "get",
 					url: `${baseApiUrl}/apiTests/${item.name}`
 				};
 
-				await axios(config)
-					.then(resp => {
-						this.apiTest.resp = resp.data.resp;
+				await axios(configGetApiTest)
+					.then(apiTests => {
+						this.apiTest.resp = apiTests.data.resp;
 					})
 					.catch(showError);
 
 				this.respDialog = true;
 			},
 			async loadApis(item) {
-				const config = {
+				const configGetApiFootball = {
 					method: "get",
 					url: `${baseFootballApiUrl}/${item.url || item.name}`,
 					headers: footballApiHeaders,
 					params: item.params
 				};
 
-				let resp = await axios(config)
-					.then(resp => resp.data.response)
+				const responseApiTest = await axios(configGetApiFootball)
+					.then(responseApiTest => responseApiTest.data.response)
 					.catch(showError);
 
-				let apiTest = {
+				const apiTest = {
 					name: item.name,
-					resp: JSON.stringify(resp)
+					resp: JSON.stringify(responseApiTest)
 				};
 
 				await axios
@@ -120,7 +120,7 @@
 				}
 			];
 
-			this.data = [
+			this.apitests = [
 				{ name: "countries" },
 				{ name: "teams" },
 				{ name: "leagues" },

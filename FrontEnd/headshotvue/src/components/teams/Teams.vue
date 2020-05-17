@@ -1,7 +1,7 @@
 <template>
 	<div id="app">
 		<v-app id="inspire">
-			<v-data-table :headers="headers" :items="data" :sort-by="headers.sortBy" class="elevation-1">
+			<v-data-table :headers="headers" :items="teams" :sort-by="headers.sortBy" class="elevation-1">
 				<template v-slot:top>
 					<v-toolbar flat>
 						<v-toolbar-title class="col-2">{{$i18n.t(`headshot.teams.${title}`)}}</v-toolbar-title>
@@ -43,7 +43,7 @@
 		data: function() {
 			return {
 				headers: [],
-				data: [],
+				teams: [],
 				imageDialog: false,
 				title: "teams",
 				team: {}
@@ -55,30 +55,30 @@
 				this.imageDialog = true;
 			},
 			async loadteams() {
-				const config = {
+				const configGetTeams = {
 					method: "get",
 					url: `${baseApiUrl}/teams`
 				};
 
-				axios(config)
+				axios(configGetTeams)
 					.then(teams => {
-						this.data = teams.data.map(item => {
+						this.teams = teams.data.map(item => {
 							return item;
 						});
 					})
 					.catch(showError);
 			},
 			async insertTeams() {
-				const config = {
+				const configGetTeams = {
 					method: "get",
 					url: `${baseFootballApiUrl}/teams`,
 					headers: footballApiHeaders,
 					params: { league: 39, season: 2019 }
 				};
 
-				let teams = await axios(config)
-					.then(resp => {
-						return resp.data.response;
+				let teams = await axios(configGetTeams)
+					.then(teams => {
+						return teams.data.response;
 					})
 					.catch(showError);
 			}

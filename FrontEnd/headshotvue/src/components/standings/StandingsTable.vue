@@ -135,7 +135,7 @@
 					return;
 				}
 
-				let config = {
+				let configGetLastStandingPerRound = {
 					method: "get",
 					url: `${baseApiUrl}/lastStandingPerRound`,
 					params: {
@@ -144,11 +144,11 @@
 					}
 				};
 
-				axios(config)
-					.then(item => {
-						const roundNumber = item.data[0].roundNumber;
+				axios(configGetLastStandingPerRound)
+					.then(lastStandingPerRound => {
+						const roundNumber = lastStandingPerRound.data[0].roundNumber;
 
-						let config = {
+						let configGetStandingPerRound = {
 							method: "get",
 							url: `${baseApiUrl}/standingsPerRound`,
 							params: {
@@ -158,7 +158,7 @@
 							}
 						};
 
-						return axios(config);
+						return axios(configGetStandingPerRound);
 					})
 					.then(standingsPerRound => {
 						this.standings = standingsPerRound.data.map(item => {

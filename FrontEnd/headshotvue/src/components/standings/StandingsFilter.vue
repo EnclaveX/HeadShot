@@ -58,7 +58,7 @@
 				this.seasonId = seasonId;
 			},
 			async loadLeagues() {
-				const config = {
+				const configGetLeagues = {
 					method: "get",
 					url: `${baseApiUrl}/leagues`,
 					params: {
@@ -66,7 +66,7 @@
 					}
 				};
 
-				axios(config)
+				axios(configGetLeagues)
 					.then(leagues => {
 						this.leagues = leagues.data.map(item => {
 							return {
@@ -78,7 +78,7 @@
 					.catch(showError);
 			},
 			loadSeasons(leagueId) {
-				const config = {
+				const configGetSeasons = {
 					method: "get",
 					url: `${baseApiUrl}/seasons`,
 					params: {
@@ -86,19 +86,15 @@
 					}
 				};
 
-				axios(config)
+				axios(configGetSeasons)
 					.then(seasons => {
-						const sortedSeasons = seasons.data.sort(function(a, b) {
-							if (a.year > b.year) {
-								return 1;
-							}
-							if (a.year < b.year) {
-								return -1;
-							}
-							if (a.year === b.year) {
-								return 0;
-							}
-						});
+						const yearSort = function(antValue, nextValue) {
+							if (antValue.year > nextValue.year) return 1;
+							if (antValue.year < nextValue.year) return -1;
+							if (antValue.year === nextValue.year) return 0;
+						};
+
+						const sortedSeasons = seasons.data.sort(yearSort);
 
 						this.seasons = sortedSeasons.map(item => {
 							return {

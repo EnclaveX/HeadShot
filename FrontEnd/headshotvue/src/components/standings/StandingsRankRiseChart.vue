@@ -151,7 +151,7 @@
 				this.series[0].data.push(...rankings);
 			},
 			loadStandingsPerRound() {
-				let config = {
+				let configGetStandingsPerRound = {
 					method: "get",
 					url: `${baseApiUrl}/standingsPerRound`,
 					params: {
@@ -162,7 +162,7 @@
 					}
 				};
 
-				return axios(config)
+				return axios(configGetStandingsPerRound)
 					.then(async standingsPerRound => {
 						await this.defineCategories(standingsPerRound);
 						await this.defineSeries(standingsPerRound);

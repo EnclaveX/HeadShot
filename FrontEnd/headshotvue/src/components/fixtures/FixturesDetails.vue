@@ -73,263 +73,111 @@
 			}
 		},
 		mounted() {
-			console.log(this.fixture);
-
 			const calculatePercent = (homeValue, awayValue, type) => {
 				let totalValue = homeValue + awayValue;
 
 				return ((type === "home" ? homeValue : awayValue) / totalValue) * 100;
 			};
 
-			
+			const insertStatistic = (homeValue, awayValue, label) => {
+				this.statistics.push({
+					label: this.$i18n.t(`headshot.fixtureDetails.${label}`),
+					homeValue: homeValue,
+					awayValue: awayValue,
+					homeValuePercent: calculatePercent(homeValue, awayValue, "home"),
+					awayValuePercent: calculatePercent(homeValue, awayValue, "away")
+				});
+			};
 
 			this.statistics.push({
 				label: this.$i18n.t(`headshot.fixtureDetails.ballPossession`),
-				homeValue: `${this.fixture.homeBallPossession}%`,
-				awayValue: `${this.fixture.awayBallPossession}%`,
-				homeValuePercent: this.fixture.homeBallPossession,
-				awayValuePercent: this.fixture.awayBallPossession
+				homeValue: `${this.fixture.homeBallPossession || 0}%`,
+				awayValue: `${this.fixture.awayBallPossession || 0}%`,
+				homeValuePercent: this.fixture.homeBallPossession || 0,
+				awayValuePercent: this.fixture.awayBallPossession || 0
 			});
 
-			this.statistics.push({
-				label: this.$i18n.t(`headshot.fixtureDetails.shots`),
-				homeValue: this.fixture.homeTotalShots,
-				awayValue: this.fixture.awayTotalShots,
-				homeValuePercent: calculatePercent(
-					this.fixture.homeTotalShots,
-					this.fixture.awayTotalShots,
-					"home"
-				),
-				awayValuePercent: calculatePercent(
-					this.fixture.homeTotalShots,
-					this.fixture.awayTotalShots,
-					"away"
-				)
-			});
+			insertStatistic(
+				this.fixture.homeTotalShots,
+				this.fixture.awayTotalShots,
+				"shots"
+			);
 
-			this.statistics.push({
-				label: this.$i18n.t(`headshot.fixtureDetails.shotsOnGoal`),
-				homeValue: this.fixture.homeShotsOnGoal,
-				awayValue: this.fixture.awayShotsOnGoal,
-				homeValuePercent: calculatePercent(
-					this.fixture.homeShotsOnGoal,
-					this.fixture.awayShotsOnGoal,
-					"home"
-				),
-				awayValuePercent: calculatePercent(
-					this.fixture.homeShotsOnGoal,
-					this.fixture.awayShotsOnGoal,
-					"away"
-				)
-			});
+			insertStatistic(
+				this.fixture.homeShotsOnGoal,
+				this.fixture.awayShotsOnGoal,
+				"shotsOnGoal"
+			);
 
-			this.statistics.push({
-				label: this.$i18n.t(`headshot.fixtureDetails.shotsOffGoal`),
-				homeValue: this.fixture.homeShotsOffGoal,
-				awayValue: this.fixture.awayShotsOffGoal,
-				homeValuePercent: calculatePercent(
-					this.fixture.homeShotsOffGoal,
-					this.fixture.awayShotsOffGoal,
-					"home"
-				),
-				awayValuePercent: calculatePercent(
-					this.fixture.homeShotsOffGoal,
-					this.fixture.awayShotsOffGoal,
-					"away"
-				)
-			});
+			insertStatistic(
+				this.fixture.homeShotsOffGoal,
+				this.fixture.awayShotsOffGoal,
+				"shotsOffGoal"
+			);
 
-			this.statistics.push({
-				label: this.$i18n.t(`headshot.fixtureDetails.blockedShots`),
-				homeValue: this.fixture.homeBlockedShots,
-				awayValue: this.fixture.awayBlockedShots,
-				homeValuePercent: calculatePercent(
-					this.fixture.homeBlockedShots,
-					this.fixture.awayBlockedShots,
-					"home"
-				),
-				awayValuePercent: calculatePercent(
-					this.fixture.homeBlockedShots,
-					this.fixture.awayBlockedShots,
-					"away"
-				)
-			});
+			insertStatistic(
+				this.fixture.homeBlockedShots,
+				this.fixture.awayBlockedShots,
+				"blockedShots"
+			);
 
-			this.statistics.push({
-				label: this.$i18n.t(`headshot.fixtureDetails.insideboxShots`),
-				homeValue: this.fixture.homeInsideboxShots,
-				awayValue: this.fixture.awayInsideboxShots,
-				homeValuePercent: calculatePercent(
-					this.fixture.homeInsideboxShots,
-					this.fixture.awayInsideboxShots,
-					"home"
-				),
-				awayValuePercent: calculatePercent(
-					this.fixture.homeInsideboxShots,
-					this.fixture.awayInsideboxShots,
-					"away"
-				)
-			});
+			insertStatistic(
+				this.fixture.homeInsideboxShots,
+				this.fixture.awayInsideboxShots,
+				"insideboxShots"
+			);
 
-			this.statistics.push({
-				label: this.$i18n.t(`headshot.fixtureDetails.outsideboxShots`),
-				homeValue: this.fixture.homeOutsideboxShots,
-				awayValue: this.fixture.awayOutsideboxShots,
-				homeValuePercent: calculatePercent(
-					this.fixture.homeOutsideboxShots,
-					this.fixture.awayOutsideboxShots,
-					"home"
-				),
-				awayValuePercent: calculatePercent(
-					this.fixture.homeOutsideboxShots,
-					this.fixture.awayOutsideboxShots,
-					"away"
-				)
-			});
+			insertStatistic(
+				this.fixture.homeOutsideboxShots,
+				this.fixture.awayOutsideboxShots,
+				"outsideboxShots"
+			);
 
-			this.statistics.push({
-				label: this.$i18n.t(`headshot.fixtureDetails.corners`),
-				homeValue: this.fixture.homeCorners,
-				awayValue: this.fixture.awayCorners,
-				homeValuePercent: calculatePercent(
-					this.fixture.homeCorners,
-					this.fixture.awayCorners,
-					"home"
-				),
-				awayValuePercent: calculatePercent(
-					this.fixture.homeCorners,
-					this.fixture.awayCorners,
-					"away"
-				)
-			});
+			insertStatistic(
+				this.fixture.homeCorners,
+				this.fixture.awayCorners,
+				"corners"
+			);
 
-			this.statistics.push({
-				label: this.$i18n.t(`headshot.fixtureDetails.goalkeeperSaves`),
-				homeValue: this.fixture.homeGoalkeeperSave,
-				awayValue: this.fixture.awayGoalkeeperSave,
-				homeValuePercent: calculatePercent(
-					this.fixture.homeGoalkeeperSave,
-					this.fixture.awayGoalkeeperSave,
-					"home"
-				),
-				awayValuePercent: calculatePercent(
-					this.fixture.homeGoalkeeperSave,
-					this.fixture.awayGoalkeeperSave,
-					"away"
-				)
-			});			
+			insertStatistic(
+				this.fixture.homeGoalkeeperSave,
+				this.fixture.awayGoalkeeperSave,
+				"goalkeeperSaves"
+			);
 
-			this.statistics.push({
-				label: this.$i18n.t(`headshot.fixtureDetails.fouls`),
-				homeValue: this.fixture.homeFouls,
-				awayValue: this.fixture.awayFouls,
-				homeValuePercent: calculatePercent(
-					this.fixture.homeFouls,
-					this.fixture.awayFouls,
-					"home"
-				),
-				awayValuePercent: calculatePercent(
-					this.fixture.homeFouls,
-					this.fixture.awayFouls,
-					"away"
-				)
-			});
+			insertStatistic(this.fixture.homeFouls, this.fixture.awayFouls, "fouls");
 
-			this.statistics.push({
-				label: this.$i18n.t(`headshot.fixtureDetails.yellowCards`),
-				homeValue: this.fixture.homeYellowCards,
-				awayValue: this.fixture.awayYellowCards,
-				homeValuePercent: calculatePercent(
-					this.fixture.homeYellowCards,
-					this.fixture.awayYellowCards,
-					"home"
-				),
-				awayValuePercent: calculatePercent(
-					this.fixture.homeYellowCards,
-					this.fixture.awayYellowCards,
-					"away"
-				)
-			});
+			insertStatistic(
+				this.fixture.homeYellowCards,
+				this.fixture.awayYellowCards,
+				"yellowCards"
+			);
 
-			this.statistics.push({
-				label: this.$i18n.t(`headshot.fixtureDetails.redCards`),
-				homeValue: this.fixture.homeRedCards,
-				awayValue: this.fixture.awayRedCards,
-				homeValuePercent: calculatePercent(
-					this.fixture.homeRedCards,
-					this.fixture.awayRedCards,
-					"home"
-				),
-				awayValuePercent: calculatePercent(
-					this.fixture.homeRedCards,
-					this.fixture.awayRedCards,
-					"away"
-				)
-			});
+			insertStatistic(
+				this.fixture.homeRedCards,
+				this.fixture.awayRedCards,
+				"redCards"
+			);
 
-			this.statistics.push({
-				label: this.$i18n.t(`headshot.fixtureDetails.offsides`),
-				homeValue: this.fixture.homeOffsides,
-				awayValue: this.fixture.awayOffsides,
-				homeValuePercent: calculatePercent(
-					this.fixture.homeOffsides,
-					this.fixture.awayOffsides,
-					"home"
-				),
-				awayValuePercent: calculatePercent(
-					this.fixture.homeOffsides,
-					this.fixture.awayOffsides,
-					"away"
-				)
-			});
+			insertStatistic(
+				this.fixture.homeOffsides,
+				this.fixture.awayOffsides,
+				"offsides"
+			);
 
-			this.statistics.push({
-				label: this.$i18n.t(`headshot.fixtureDetails.fouls`),
-				homeValue: this.fixture.homeFouls,
-				awayValue: this.fixture.awayFouls,
-				homeValuePercent: calculatePercent(
-					this.fixture.homeFouls,
-					this.fixture.awayFouls,
-					"home"
-				),
-				awayValuePercent: calculatePercent(
-					this.fixture.homeFouls,
-					this.fixture.awayFouls,
-					"away"
-				)
-			});
+			insertStatistic(this.fixture.homeFouls, this.fixture.awayFouls, "fouls");
 
-			this.statistics.push({
-				label: this.$i18n.t(`headshot.fixtureDetails.totalPasses`),
-				homeValue: this.fixture.homeTotalPasses,
-				awayValue: this.fixture.awayTotalPasses,
-				homeValuePercent: calculatePercent(
-					this.fixture.homeTotalPasses,
-					this.fixture.awayTotalPasses,
-					"home"
-				),
-				awayValuePercent: calculatePercent(
-					this.fixture.homeTotalPasses,
-					this.fixture.awayTotalPasses,
-					"away"
-				)
-			});
+			insertStatistic(
+				this.fixture.homeTotalPasses,
+				this.fixture.awayTotalPasses,
+				"totalPasses"
+			);
 
-			this.statistics.push({
-				label: this.$i18n.t(`headshot.fixtureDetails.passesAccurate`),
-				homeValue: this.fixture.homePassesAccurate,
-				awayValue: this.fixture.awayPassesAccurate,
-				homeValuePercent: calculatePercent(
-					this.fixture.homePassesAccurate,
-					this.fixture.awayPassesAccurate,
-					"home"
-				),
-				awayValuePercent: calculatePercent(
-					this.fixture.homePassesAccurate,
-					this.fixture.awayPassesAccurate,
-					"away"
-				)
-			});
+			insertStatistic(
+				this.fixture.homePassesAccurate,
+				this.fixture.awayPassesAccurate,
+				"passesAccurate"
+			);
 		}
 	};
 </script>
