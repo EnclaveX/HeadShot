@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt-nodejs')
 module.exports = app => {
     const { existsOrError, notExistsOrError, equalsOrError } = app.api.validations.generalValidation
 
-    const encryptPassword = password => {
+    const encryptPassword = password => { 
         const salt = bcrypt.genSaltSync(10)
         return bcrypt.hashSync(password, salt)
     }
