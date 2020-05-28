@@ -11,14 +11,21 @@ const i18n = new VueI18n({
 
 export const userKey = '__knowledge_user'
 export const baseApiUrl = 'http://localhost:3001'
-export const baseFootballApiUrl = 'https://api-football-v1.p.rapidapi.com'
+export const baseFootballApiUrl = 'https://api-football-beta.p.rapidapi.com'
 export const footballApiHeaders = {
     "x-rapidapi-host": "api-football-beta.p.rapidapi.com",
     "x-rapidapi-key": "1320ffeacfmsh4ad3a0a2b97c3c8p1ad9f1jsn75c1e160eac6",
     "Content-Type": "application/json"
 }
+export const baseFootballOfficialApiUrl = 'https://api-football-v1.p.rapidapi.com/v2'
+export const footballOfficialApiHeaders = {
+    "x-rapidapi-host": "api-football-v1.p.rapidapi.com",
+    "x-rapidapi-key": "1320ffeacfmsh4ad3a0a2b97c3c8p1ad9f1jsn75c1e160eac6",
+    "Content-Type": "application/json"
+}
 
-export const production = true
+export const production = false
+export const apiType = 'beta' //official || beta
 
 export function showError(e) {
     const locale = localStorage.getItem('HeadShotLocale')
@@ -44,4 +51,4 @@ export function showError(e) {
     }
 }
 
-export default { baseApiUrl, showError, userKey, baseFootballApiUrl, footballApiHeaders, production }
+export default { baseApiUrl, showError, userKey, baseFootballApiUrl, footballApiHeaders, production, apiType }

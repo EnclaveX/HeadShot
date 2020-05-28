@@ -42,6 +42,8 @@ module.exports = app => {
             'fixtures.id',
             'fixtures.venue',
             'fixtures.status',
+            'fixtures.league_id as leagueId',
+            'fixtures.season_id as seasonId',
             'fixtures.round',
             'fixtures.round_number as roundNumber',
             'fixtures.fixture_date as fixtureDate',
@@ -127,6 +129,7 @@ module.exports = app => {
                         fixture.away_ball_possession = parseInt(fixture.away_ball_possession.replace('%', ''))
                     }
 
+
                     if (!!fixtureDB && fixtureDB.id) {
                         const id = fixture.id
 
@@ -135,14 +138,21 @@ module.exports = app => {
                         app.db('fixtures')
                             .where('id', id)
                             .update(fixture)
+                            .then(() => {
+                                console.error('Updated fixture')
+                            })
                             .catch(err => {
-                                console.log(err)
+                                console.error('Insert fixtures', err)
                                 reject(err)
                             })
                     } else {
                         app.db('fixtures')
                             .insert(fixture)
+                            .then(() => {
+                                console.error('Inserted fixture')
+                            })
                             .catch(err => {
+                                console.error('Update fixtures', err)
                                 reject(err)
                             })
                     }

@@ -114,6 +114,8 @@ module.exports = app => {
     save = async (req, res) => {
         const standingsPerRound = req.body
 
+        console.log(standingsPerRound)
+
         let standingPerRoundDB
 
         const insertStandingsPerRound = function (standingsPerRound) {
@@ -147,12 +149,18 @@ module.exports = app => {
                             .andWhere('season_id', seasonId)
                             .andWhere('round', round)
                             .update(standingPerRound)
+                            .then(() => {
+                                console.log('Standing Per Round updated')
+                            })
                             .catch(err => {
                                 reject(err)
                             })
                     } else {
                         app.db('standings_per_round')
                             .insert(standingPerRound)
+                            .then(() => {
+                                console.log('Standing Per Round inserted')
+                            })
                             .catch(err => {
                                 reject(err)
                             })
@@ -160,6 +168,8 @@ module.exports = app => {
 
                     if (index === standingPerRound.length - 1) {
                         resolve(standingsPerRound)
+                        
+                        console.log('Standing Per Round resolved')
                     }
                 })
             })

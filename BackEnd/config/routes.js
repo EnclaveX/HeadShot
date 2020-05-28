@@ -2,6 +2,8 @@ module.exports = app => {
     app.post('/signup', app.api.user.save)
     app.post('/signin', app.api.auth.signin)
     app.post('/validateToken', app.api.auth.validateToken)
+    app.post('/requestsPerDay/:url', app.api.auth.updateRequestsPerDay)
+    app.post('/getRequestsPerDay/:url', app.api.auth.getRequestsPerDay)
 
     app.route('/countries')
         .post(app.api.countries.save)

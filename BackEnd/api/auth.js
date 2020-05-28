@@ -53,5 +53,66 @@ module.exports = app => {
         res.send(false)
     }
 
-    return { signin, validateToken }
+    const updateRequestsPerDay = async (req, res) => {
+        const day = new Date().toLocaleDateString()
+        const url = req.params.url
+        
+        let requestsToday = await app.db('requests_per_day')
+            .where({
+                day: day,
+                url: url
+            })
+            .first()
+
+            
+            if (!requestsToday) {
+            requestsToday = {
+                day: day,
+                url: url,
+                requests: 1
+            }
+            
+            app.db('requests_per_day')
+            .insert(requestsToday)
+            .catch(err => {
+                console.error(err)
+                
+                res.send(false)
+            })
+        } else {
+            requestsToday.requests++
+            
+            const id = requestsToday.id
+
+            delete requestsToday.id
+
+            app.db('requests_per_day')
+                .update(requestsToday)
+                .where({
+                    id: id
+                })
+                .catch(err => {
+                    console.error(err)
+
+                    res.send(false)
+                })
+        }
+
+        res.send(true)
+    }
+
+    const getRequestsPerDay = async (req, res) => {
+        const day = new Date().toLocaleDateString()
+
+        let requests = await app.db('requests_per_day')
+            .where({
+                day: day,
+                url: req.params.url
+            })
+            .first()
+
+        res.json(requests)
+    }
+
+    return { signin, validateToken, updateRequestsPerDay, getRequestsPerDay }
 }
