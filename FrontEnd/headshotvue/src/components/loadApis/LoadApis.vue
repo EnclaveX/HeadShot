@@ -93,9 +93,7 @@
 				try {
 					const responseApiTest = await axios(configGetApiFootball)
 						.then(responseApiTest => responseApiTest.data.response)
-						.catch(showError => {
-							console.log(showError)
-						});
+						.catch(showError);
 
 					const apiTest = {
 						name: item.name,
@@ -108,8 +106,6 @@
 							this.$toasted.global.defaultSuccess();
 						})
 						.catch(showError);
-				} catch (err) {
-					console.log(err);
 				}
 			}
 		},

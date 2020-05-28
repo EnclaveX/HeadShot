@@ -75,11 +75,7 @@
 							return item;
 						});
 					})
-					.catch(showError => {
-						console.error(showError)
-
-						return showError
-					});
+					.catch(showError);
 			},
 			async insertCountries() {
 				if (production) {

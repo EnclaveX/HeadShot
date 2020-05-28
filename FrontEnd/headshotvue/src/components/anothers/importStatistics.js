@@ -179,8 +179,6 @@ const assembleStatistics = async () => {
 const importStatistics = async () => {
     await assembleStatistics()
         .then((statistics) => {
-            console.log(statistics)
-            
             axios
                 .post(`${baseApiUrl}/fixtures`, statistics)
                 .then(() => {

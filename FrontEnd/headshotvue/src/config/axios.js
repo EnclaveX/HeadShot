@@ -24,8 +24,6 @@ axios.interceptors.request.use(
                     return requestsPerDay
                 }))
                 .catch(err => {
-                    console.log(err)
-
                     return false
                 })
 
@@ -40,9 +38,6 @@ axios.interceptors.request.use(
                 .then(() => {
                     return true
                 })
-                .catch(err => {
-                    console.log(err)
-                })
         } catch (err) {
             console.error(err)
         }
@@ -50,7 +45,6 @@ axios.interceptors.request.use(
         return config;
     },
     error => {
-        // console.log
         return Promise.reject(error);
     }
 );

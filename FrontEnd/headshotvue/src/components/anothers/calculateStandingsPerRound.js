@@ -329,9 +329,6 @@ const getStandingsPerRound = async leagues => {
                 });
 
                 return standingsPerRound;
-            })
-            .catch((err) => {
-                console.log(err)
             });
 
         standing.length > 0 ? standings.push(standing) : false;
@@ -395,9 +392,7 @@ const calculateStandingsPerRound = async (current) => {
         .then(() => {
             this.$toasted.global.defaultSuccess();
         })
-        .catch((showError) => {
-            console.log(showError)
-        });
+        .catch(showError);
 }
 
 export default calculateStandingsPerRound
