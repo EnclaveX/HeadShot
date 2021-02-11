@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@nuxtjs/vuetify": "^1.11.0",
-    "apexcharts": "^3.19.0",
+    "apexcharts": "^3.24.0",
     "axios": "^0.19.2",
     "core-js": "^3.6.4",
     "number-format.js": "^2.0.9",
